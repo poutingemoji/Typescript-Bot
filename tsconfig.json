@@ -1,0 +1,11 @@
+{
+  "ts-node": {
+    "transpileOnly": true
+  },
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "lib": ["ES2020", "DOM"],
+    "module": "commonjs",
+    "target": "ES2020"
+  }
+}

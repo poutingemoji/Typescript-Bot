@@ -1,0 +1,35 @@
+{
+  "name": "poutingrpg",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
+  "author": "poutingemoji",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^2.6.1",
+    "change-case": "^4.1.2",
+    "commando-mongodb": "^1.1.0",
+    "common-tags": "^1.8.0",
+    "dblapi.js": "^2.4.1",
+    "discord-paginationembed": "^2.1.0",
+    "discord.js": "^12.2.0",
+    "discord.js-commando": "github:discordjs/Commando",
+    "dotenv": "^8.2.0",
+    "expr-eval": "^2.0.2",
+    "lodash.clonedeep": "^4.5.0",
+    "moment": "^2.29.1",
+    "mongodb": "^3.6.2",
+    "mongoose": "^5.10.9",
+    "string-similarity": "^4.0.3"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.20",
+    "ts-node": "^9.1.1"
+  },
+  "description": ""
+}
