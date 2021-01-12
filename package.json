@@ -31,5 +31,8 @@
     "@types/node": "^14.14.20",
     "ts-node": "^9.1.1"
   },
-  "description": ""
+  "description": "",
+  "engines": {
+    "node": "15.x"
+  }
 }
