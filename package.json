@@ -17,11 +17,9 @@
     "discord.js-commando": "github:discordjs/Commando",
     "dotenv": "^8.2.0",
     "expr-eval": "^2.0.2",
-    "lodash.clonedeep": "^4.5.0",
     "moment": "^2.29.1",
     "mongodb": "^3.6.2",
-    "mongoose": "^5.10.9",
-    "string-similarity": "^4.0.3"
+    "mongoose": "^5.10.9"
   },
   "directories": {
     "doc": "docs"
