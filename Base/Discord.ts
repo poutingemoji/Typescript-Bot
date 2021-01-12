@@ -1,66 +1,66 @@
-//BASE
-const { MessageAttachment, MessageEmbed } = require("discord.js");
-const { snakeCase } = require("change-case");
+import {
+  UserResolvable,
+  MessageAttachment,
+  MessageEmbed,
+  MessageEmbedOptions,
+} from "discord.js";
+import { Command, CommandoClient } from "discord.js-commando";
+import { waitingOnResponse } from "../utils/enumHelper";
 
-//DATA
-const emojis = require("../data/emojis");
+interface File {
+  path: string;
+  name?: string;
+}
 
-//UTILS
-const Pagination = require("../utils/discord/Pagination");
-const { responseWaitTime, waitingOnResponse } = require("../utils/enumHelper");
-const {containsOnlyEmojis} = require("../utils/Helper");
+interface MessageEmbedCustomOptions {
+  author?: UserResolvable;
+  file?: File;
+}
 
-module.exports = class Discord {
+export default class Discord {
+  public client: any;
   constructor(client) {
     this.client = client;
-    this.Pagination = new Pagination(this);
   }
 
-  emoji(str) {
+  public hi() {
+    console.log("hi");
+  }
+
+  public buildEmbed(
+    options: MessageEmbedOptions,
+    customOptions?: Partial<MessageEmbedCustomOptions>
+  ) {
+    const messageEmbed = Object.assign(new MessageEmbed(), options);
+    if (customOptions) {
+      if (customOptions.hasOwnProperty("author")) {
+        const { author } = customOptions;
+        messageEmbed.setTitle(`${author.username}'s ${options.title}`);
+      }
+      if (customOptions.hasOwnProperty("file")) {
+        const { file } = customOptions;
+        messageEmbed.attachFiles(
+          new MessageAttachment(file.path, `${file.name}.png`)
+        );
+        messageEmbed.setImage(`attachment://${file.name}.png`);
+      }
+    }
+    return messageEmbed;
+  }
+
+  /*
+    emoji(str: string) {
     const emojiId = this.client.emojis.cache.get(str)
       ? str //already emojiId
       : emojis[emojis.hasOwnProperty(str) ? str : snakeCase(str)]; //was an emoji name or try to make it an emoji name
     if (!this.client.emojis.cache.get(emojiId)) {
-      return emojis.hasOwnProperty(str)
-        ? emojiId
-        : containsOnlyEmojis(str); //return the unicode emoji or a blank string
+      return emojis.hasOwnProperty(str) ? emojiId : containsOnlyEmojis(str); //return the unicode emoji or a blank string
     }
     return this.client.emojis.cache.get(emojiId).toString(); //return the custom emoji
   }
+  */
 
-  buildEmbed(params) {
-    const {
-      author,
-      color,
-      description,
-      embed,
-      fileName = "default",
-      filePath,
-      footer,
-      image,
-      thumbnail,
-      title,
-    } = params;
-
-    const messageEmbed = embed || new MessageEmbed();
-    if (color) messageEmbed.setColor(color);
-    if (thumbnail) messageEmbed.setThumbnail(thumbnail);
-
-    if (title)
-      messageEmbed.setTitle(`${author ? `${author.username}'s ` : ""}${title}`);
-    if (description) messageEmbed.setDescription(description);
-    if (filePath) {
-      const attachment = new MessageAttachment(filePath, `${fileName}.png`);
-      messageEmbed.attachFiles(attachment);
-      messageEmbed.setImage(`attachment://${fileName}.png`);
-    }
-    if (image) messageEmbed.setImage(image);
-    if (footer) messageEmbed.setFooter(footer);
-    return messageEmbed;
-  }
-
-  async confirmation(params) {
-    const { author, msg, response } = params;
+  async confirmation(author, msg, response) {
     const awaitParams = {
       author: response ? msg.author : author,
       msg: response ? await msg.reply(response) : msg,
@@ -75,19 +75,12 @@ module.exports = class Discord {
     return res == "green_check";
   }
 
-  async createResponseCollector(params) {
-    const {
-      author,
-      msg,
-      type,
-      reactToMessage = true,
-      removeAllReactions = false,
-      removeResponses = false,
-      deleteOnResponse = false,
-      filter,
-      onCollect,
-      onEnd,
-    } = params;
+  async createResponseCollector(
+    author,
+    msg,
+    type,
+    { reactToMessage = true, filter, onCollect, onEnd }
+  ) {
     if (!["message", "reaction"].includes(type)) return;
 
     if (type == "reaction") {
@@ -126,21 +119,23 @@ module.exports = class Discord {
     });
   }
 
-  async awaitResponse(params) {
-    const {
-      author,
-      msg,
-      type,
-      reactToMessage = true,
+  async awaitResponse(
+    author,
+    msg,
+    type,
+    {
+      reactToMessage: boolean = true,
       removeAllReactions = false,
       removeResponses = false,
       deleteOnResponse = false,
       filter,
-    } = params;
+      chooseFrom,
+      responseWaitTime,
+    }
+  ) {
     if (!["message", "reaction"].includes(type)) return;
     waitingOnResponse.add(author.id);
 
-    let { chooseFrom, responseWaitTime } = params;
     const awaitParams = { max: 1 };
     if (responseWaitTime) {
       awaitParams.time = responseWaitTime;
@@ -190,4 +185,4 @@ module.exports = class Discord {
       ? collected.first().content
       : collected.first().emoji.name;
   }
-};
+}

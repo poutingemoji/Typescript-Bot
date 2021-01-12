@@ -1,30 +1,6 @@
-//BASE
-const Parser = require("expr-eval").Parser;
-const { stripIndents } = require("common-tags");
-const { capitalCase, camelCase, snakeCase } = require("change-case");
-const cloneDeep = require("lodash.clonedeep");
+import { Parser } from "expr-eval";
 
-//DATA
-const { newEquipmentObj } = require("../database/schemas/equipment");
-const { newCharacterObj } = require("../database/schemas/character");
-const arcs = require("../data/arcs");
-const characters = require("../data/characters");
-const enemies = require("../data/enemies");
-const emojis = require("../data/emojis");
-const items = require("../data/items");
-const talents = require("../data/talents");
-console.log(items)
-// UTILS
-const Database = require("../database/Database");
-const {
-  adventureRankRanges,
-  expFormulas,
-  statFormulas,
-  itemCategories,
-} = require("../utils/enumHelper");
-const { clamp, isBetween, randomWeightedChoice } = require("../utils/Helper");
-console.log("ITEM", randomWeightedChoice(Object.values(items)))
-module.exports = class Game {
+export default class Game {
   constructor(client) {
     this.Database = new Database(client, this);
   }
