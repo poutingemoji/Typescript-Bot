@@ -1,6 +1,6 @@
 //BASE
 import Command from "../../Base/Command";
-import {MessageEmbed} from "discord.js";
+import { MessageEmbed } from "discord.js";
 export default class StartCommand extends Command {
   constructor(client) {
     super(client, {
@@ -16,6 +16,8 @@ export default class StartCommand extends Command {
   }
 
   async run(msg) {
-    return msg.say(this.buildEmbed({ title: "ya", color: "#c362cb" }, {author: msg.author}));
+    return msg.say(
+      this.buildEmbed({ title: "ya", color: "#c362cb" }, { author: msg.author })
+    );
   }
 }

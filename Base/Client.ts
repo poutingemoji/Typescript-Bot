@@ -1,13 +1,14 @@
 import { stripIndents } from "common-tags";
-import { CommandoClient, Inhibition } from "discord.js-commando";
+import { CommandoClient } from "discord.js-commando";
 import { config } from "dotenv";
 import { writeFile } from "fs";
 import { join } from "path";
-import {waitingOnResponse, commandGroups} from "../utils/enumHelper";
-import {secondsToTimeFormat} from "../utils/Helper";
+import { secondsToTimeFormat } from "../utils/Helper";
+import { commandGroups, waitingOnResponse } from "../utils/enumHelper";
+
 config();
 
-export default class Client extends CommandoClient{
+export default class Client extends CommandoClient {
   public start(): void {
     this.loadEventListeners();
     this.loadCommands();

@@ -1,16 +1,6 @@
-import { Date } from "mongoose";
+import { Date } from 'mongoose';
 
 //http://patorjk.com/software/taag/#p=testall&f=Modular
-/*
-  ___   __    _  _______  _______  _______  _______  ______   
-|   | |  |  | ||       ||       ||       ||       ||    _ |  
-|   | |   |_| ||_     _||    ___||    ___||    ___||   | ||  
-|   | |       |  |   |  |   |___ |   | __ |   |___ |   |_||_ 
-|   | |  _    |  |   |  |    ___||   ||  ||    ___||    __  |
-|   | | | |   |  |   |  |   |___ |   |_| ||   |___ |   |  | |
-|___| |_|  |__|  |___|  |_______||_______||_______||___|  |_|
-*/
-
 /**
  * Returns a number within a min and max
  * @param int
@@ -42,16 +32,6 @@ export function numberWithCommas(int: number): string {
   return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-/*
-  _______  _______  ______    ___   __    _  _______ 
-|       ||       ||    _ |  |   | |  |  | ||       |
-|  _____||_     _||   | ||  |   | |   |_| ||    ___|
-| |_____   |   |  |   |_||_ |   | |       ||   | __ 
-|_____  |  |   |  |    __  ||   | |  _    ||   ||  |
-  _____| |  |   |  |   |  | ||   | | | |   ||   |_| |
-|_______|  |___|  |___|  |_||___| |_|  |__||_______|
-*/
-
 /**
  * Removes emojis from a string
  * Utilizes https://stackoverflow.com/a/61783246
@@ -73,19 +53,12 @@ export function containsOnlyEmojis(text: string): string {
  * @param syntax
  * @returns codeblock
  */
-export function setImportantMessage(message: string, syntax: string = ""): string {
+export function setImportantMessage(
+  message: string,
+  syntax: string = ""
+): string {
   return `\`\`\`${syntax}\n${message}\`\`\``;
 }
-
-/*
-    _______  ______    ______    _______  __   __ 
-  |   _   ||    _ |  |    _ |  |   _   ||  | |  |
-  |  |_|  ||   | ||  |   | ||  |  |_|  ||  |_|  |
-  |       ||   |_||_ |   |_||_ |       ||       |
-  |       ||    __  ||    __  ||       ||_     _|
-  |   _   ||   |  | ||   |  | ||   _   |  |   |  
-  |__| |__||___|  |_||___|  |_||__| |__|  |___|  
-*/
 
 export function convertArrayToObject(array: any[], key: string = "id") {
   return array.reduce((obj, item) => {
@@ -107,16 +80,6 @@ export function fillArray(value: any, length: number, arr: any[] = []) {
   }
   return arr;
 }
-
-/*
-    _______  _______      ___  _______  _______  _______ 
-  |       ||  _    |    |   ||       ||       ||       |
-  |   _   || |_|   |    |   ||    ___||       ||_     _|
-  |  | |  ||       |    |   ||   |___ |       |  |   |  
-  |  |_|  ||  _   |  ___|   ||    ___||      _|  |   |  
-  |       || |_|   ||       ||   |___ |     |_   |   |  
-  |_______||_______||_______||_______||_______|  |___|  
-*/
 
 /**
  * Returns a shallow copy of the object only with filtered properties.
@@ -170,16 +133,6 @@ export function hasOwnDeepProperty(obj, prop: string): boolean {
   return false;
 }
 
-/*
-    ______    _______  __    _  ______   _______  __   __ 
-  |    _ |  |   _   ||  |  | ||      | |       ||  |_|  |
-  |   | ||  |  |_|  ||   |_| ||  _    ||   _   ||       |
-  |   |_||_ |       ||       || | |   ||  | |  ||       |
-  |    __  ||       ||  _    || |_|   ||  |_|  ||       |
-  |   |  | ||   _   || | |   ||       ||       || ||_|| |
-  |___|  |_||__| |__||_|  |__||______| |_______||_|   |_|
-*/
-
 /**
  * Returns a random number between a min and max
  * Utilizing https://www.geeksforgeeks.org/how-to-generate-random-number-in-given-range-using-javascript/
@@ -204,21 +157,9 @@ export function randomChoice(arr: any[]) {
 
 export function randomWeightedChoice(arr: any[], prop: string = "weight") {
   return randomChoice(
-    [].concat(
-      ...arr.map((obj) => Array(Math.ceil(obj[prop] * 100)).fill(obj))
-    )
+    [].concat(...arr.map((obj) => Array(Math.ceil(obj[prop] * 100)).fill(obj)))
   );
 }
-
-/* 
-    _______  ___   __   __  _______ 
-  |       ||   | |  |_|  ||       |
-  |_     _||   | |       ||    ___|
-    |   |  |   | |       ||   |___ 
-    |   |  |   | |       ||    ___|
-    |   |  |   | | ||_|| ||   |___ 
-    |___|  |___| |_|   |_||_______|
-*/
 
 /**
  * Returns time passed in seconds since timestamp
@@ -229,14 +170,6 @@ export function getTimePassed(timestamp: Date | number): number {
   return (new Date().getTime() - timestamp) / 1000;
 }
 
-/**
- * Converts seconds to time format
- * Utilizes https://stackoverflow.com/a/52387803
- * @param seconds
- * @param conjunction
- * @param abbreviate
- * @returns Time format
- */
 export function secondsToTimeFormat(
   seconds: number,
   conjunction: string = " and ",
@@ -274,7 +207,7 @@ export async function sleep(milliseconds: number) {
   } while (currentDate - date < milliseconds);
 }
 
-/** 
+/**
  * Utilizing https://stackoverflow.com/a/45332959 to have multiple class inheritance
  */
 export function aggregation(baseClass, ...mixins) {
@@ -295,7 +228,8 @@ export function aggregation(baseClass, ...mixins) {
         if (
           !prop.match(
             /^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/
-          ) && !targeted.hasOwnProperty(prop)
+          ) &&
+          !targeted.hasOwnProperty(prop)
         )
           Object.defineProperty(
             targeted,
@@ -312,4 +246,3 @@ export function aggregation(baseClass, ...mixins) {
   });
   return base;
 }
-

@@ -1,10 +1,9 @@
 import {
-  UserResolvable,
   MessageAttachment,
   MessageEmbed,
   MessageEmbedOptions,
+  UserResolvable,
 } from "discord.js";
-import { Command, CommandoClient } from "discord.js-commando";
 import { waitingOnResponse } from "../utils/enumHelper";
 
 interface File {

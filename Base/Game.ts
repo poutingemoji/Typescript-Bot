@@ -143,16 +143,16 @@ export default class Game {
     const { id } = value;
     const datas = [characters, enemies, items];
     const data = datas.find((x) => x.hasOwnProperty(id));
-    
+
     if (!data[id]) return;
     if (!data[id].hasOwnProperty("baseStats")) return data[id];
-    
+
     let obj = Object.assign(
       { constructor: data[id].constructor, stats: {} },
       data[id],
       value
     );
-    
+
     if (!level) {
       switch (Object.getPrototypeOf(obj.constructor).name) {
         case "Character":
@@ -177,7 +177,7 @@ export default class Game {
         }
       );
     });
-   
+
     if (obj.hasOwnProperty("weapon")) {
       obj.weapon = this.getObjectStats(player, obj.weapon);
       Object.keys(obj.weapon.stats).map((statId) => {
@@ -188,7 +188,7 @@ export default class Game {
     //Calculate stats
     //Calculate talent level
   }
-};
+}
 
 function addExp(obj, expToAdd, expFormula) {
   obj.exp.current += expToAdd;
