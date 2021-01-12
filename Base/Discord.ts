@@ -17,7 +17,7 @@ interface MessageEmbedCustomOptions {
 }
 
 export default class Discord {
-  public client: any;
+  private client: any;
   constructor(client) {
     this.client = client;
   }
