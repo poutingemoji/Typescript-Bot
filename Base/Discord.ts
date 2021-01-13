@@ -6,14 +6,12 @@ import {
 } from "discord.js";
 import { waitingOnResponse } from "../utils/enumHelper";
 
-interface File {
-  path: string;
-  name?: string;
-}
-
 interface MessageEmbedCustomOptions {
   author?: UserResolvable;
-  file?: File;
+  file?: {
+    path: string;
+    name?: string;
+  };
 }
 
 export default class Discord {

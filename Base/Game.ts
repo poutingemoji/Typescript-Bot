@@ -1,5 +1,5 @@
 import { Parser } from "expr-eval";
-
+import {clamp} from "./../utils/Helper"
 export default class Game {
   constructor(client) {
     this.Database = new Database(client, this);
