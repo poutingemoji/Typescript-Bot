@@ -3,13 +3,12 @@ import { CommandoClient } from "discord.js-commando";
 import { config } from "dotenv";
 import { writeFile } from "fs";
 import { join } from "path";
-import { secondsToTimeFormat } from "../utils/Helper";
 import { commandGroups, waitingOnResponse } from "../utils/enumHelper";
-
+import { secondsToTimeFormat } from "../utils/Helper";
 config();
 
 export default class Client extends CommandoClient {
-  public start(): void {
+  public init(): void {
     this.loadEventListeners();
     this.loadCommands();
     this.login(process.env.TOKEN);
@@ -42,9 +41,6 @@ export default class Client extends CommandoClient {
     });
     /*
     this.on("message", (msg) => {
-      if (msg.author.id == "257641125135908866") {
-        msg.reply("you are dumb");
-      }
     });
     */
   }

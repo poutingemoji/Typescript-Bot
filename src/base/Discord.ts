@@ -1,30 +1,27 @@
+import { snakeCase } from "change-case";
 import {
   MessageAttachment,
   MessageEmbed,
   MessageEmbedOptions,
-  UserResolvable,
+  User
 } from "discord.js";
-import { waitingOnResponse } from "../utils/enumHelper";
+import { CommandoClient, Command, CommandInfo } from "discord.js-commando";
+import { containsOnlyEmojis } from "../utils/Helper";
 
 interface MessageEmbedCustomOptions {
-  author?: UserResolvable;
+  author?: User;
   file?: {
     path: string;
     name?: string;
   };
 }
 
-export default class Discord {
-  private client: any;
-  constructor(client) {
-    this.client = client;
+export default class Discord extends Command {
+  constructor(client: CommandoClient, info: CommandInfo) {
+    super(client, info);
   }
 
-  public hi() {
-    console.log("hi");
-  }
-
-  public buildEmbed(
+  protected buildEmbed(
     options: MessageEmbedOptions,
     customOptions?: Partial<MessageEmbedCustomOptions>
   ) {
@@ -45,8 +42,7 @@ export default class Discord {
     return messageEmbed;
   }
 
-  /*
-    emoji(str: string) {
+  protected emoji(str: string) {
     const emojiId = this.client.emojis.cache.get(str)
       ? str //already emojiId
       : emojis[emojis.hasOwnProperty(str) ? str : snakeCase(str)]; //was an emoji name or try to make it an emoji name
@@ -55,9 +51,9 @@ export default class Discord {
     }
     return this.client.emojis.cache.get(emojiId).toString(); //return the custom emoji
   }
-  */
+  /*
 
-  async confirmation(author, msg, response) {
+  protected async confirmation(author, msg, response) {
     const awaitParams = {
       author: response ? msg.author : author,
       msg: response ? await msg.reply(response) : msg,
@@ -72,7 +68,7 @@ export default class Discord {
     return res == "green_check";
   }
 
-  async createResponseCollector(
+  protected async createResponseCollector(
     author,
     msg,
     type,
@@ -116,7 +112,7 @@ export default class Discord {
     });
   }
 
-  async awaitResponse(
+  protected async awaitResponse(
     author,
     msg,
     type,
@@ -182,4 +178,5 @@ export default class Discord {
       ? collected.first().content
       : collected.first().emoji.name;
   }
+  */
 }

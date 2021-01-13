@@ -1,9 +1,9 @@
 {
   "name": "poutingrpg",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "build": "ts-node index.ts"
+    "build": "ts-node src/index.ts"
   },
   "author": "poutingemoji",
   "license": "ISC",
@@ -18,7 +18,7 @@
     "dotenv": "^8.2.0",
     "expr-eval": "^2.0.2",
     "moment": "^2.29.1",
-    "mongodb": "^3.6.2",
+    "mongodb": "^3.6.3",
     "mongoose": "^5.10.9"
   },
   "directories": {
