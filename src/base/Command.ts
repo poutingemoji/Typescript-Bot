@@ -1,12 +1,14 @@
 import { Parser } from "expr-eval";
 import Database from "../database/Database";
-
+import { User } from "discord.js";
+import { CommandoMessage } from "discord.js-commando";
+import { expFormulas } from "../utils/enumHelper";
 export default class Command extends Database {
   constructor(client, info) {
     super(client, info);
   }
 
-  protected async getPlayer(user, msg) {
+  protected async getPlayer(user: User, msg?: CommandoMessage) {
     const player = await this.findPlayer(user.id);
     if (!player) {
       if (msg) {
@@ -18,12 +20,31 @@ export default class Command extends Database {
       }
       return false;
     }
+    /*
     player.characters.forEach((value, key) =>
       player.characters.set(key, this.getObjectStats(player, key))
     );
+    */
     return Object.assign(player, user);
   }
 
+  protected async addValueToPlayer(player, key, value) {
+    player[key] += value;
+    //await this.updateQuestProgress(player, "Earn", key, value);
+    return this.updatePlayer(player);
+  }
+
+  protected async setValueToPlayer(player, key, value) {
+    player[key] = value;
+    return this.updatePlayer(player);
+  }
+
+  protected addExpToPlayer(player, expToAdd: number) {
+    addExp(player, expToAdd, expFormulas["player"]);
+    this.updatePlayer(player);
+  }
+
+  /*
   protected getObjectStats(player, value, level = false) {
     if (!["object", "string"].includes(typeof value)) return;
     if (typeof value == "string") value = { id: value };
@@ -45,13 +66,13 @@ export default class Command extends Database {
       switch (Object.getPrototypeOf(obj.constructor).name) {
         case "Character":
           obj = Object.assign(obj, player.characters.get(id));
-          level = obj.level.current;
+          level = obj.level.cur;
           break;
         case "Weapon":
           level = obj.level;
           break;
         case "Enemy":
-          level = player.level.current;
+          level = player.level.cur;
           break;
       }
     }
@@ -76,13 +97,11 @@ export default class Command extends Database {
     //Calculate stats
     //Calculate talent level
   }
+*/
 
   /*
   //PLAYER
-  protected addExpToPlayer(player, expToAdd: number) {
-    addExp(player, expToAdd, expFormulas["player"]);
-    this.replacePlayer(player);
-  }
+
 
   protected addExpToCharacter(player, expToAdd: number, characterId: string) {
     const character = player.characters.get(characterId);
@@ -93,11 +112,7 @@ export default class Command extends Database {
 
 
 
-  protected async addValueToPlayer(player, key, value) {
-    player[key] += value;
-    await this.updateQuestProgress(player, "Earn", key, value);
-    this.savePlayer(player);
-  }
+
 
   //CHARACTER
   protected addCharacter(player, characterId) {
@@ -186,7 +201,7 @@ export default class Command extends Database {
     let previousAR = 1;
     for (let AR in adventureRankRanges) {
       console.log(AR);
-      if (isBetween(player.adventureRank.current, previousAR, AR))
+      if (isBetween(player.adventureRank.cur, previousAR, AR))
         return adventureRankRanges[AR];
       previousAR = AR + 1;
     }
@@ -195,16 +210,13 @@ export default class Command extends Database {
   */
 }
 
-function addExp(obj, expToAdd, expFormula) {
-  obj.exp.current += expToAdd;
-  while (
-    obj.exp.current >= obj.exp.total &&
-    obj.level.current < obj.level.total
-  ) {
-    obj.level.current++;
-    obj.exp.current -= obj.exp.total;
-    obj.exp.total = Parser.evaluate(expFormula, {
-      n: obj.level.current + 1,
+function addExp(obj, expToAdd: number, expFormula: string) {
+  obj.exp.cur += expToAdd;
+  while (obj.exp.cur >= obj.exp.max && obj.level.cur < obj.level.max) {
+    obj.level.cur++;
+    obj.exp.cur -= obj.exp.max;
+    obj.exp.max = Parser.evaluate(expFormula, {
+      n: obj.level.cur + 1,
     });
   }
 }

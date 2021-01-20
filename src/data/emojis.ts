@@ -24,6 +24,6 @@ export default {
   //Talent Types
   attack: "🖱",
   skill: "\:regional_indicator_e:",
-  burst: "\:regional_indicator_q",
+  burst: "\:regional_indicator_q:",
   passive: "🕊️",
 };

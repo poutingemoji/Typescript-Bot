@@ -1,48 +1,6 @@
 //http://patorjk.com/software/taag/#p=testall&f=Modular
 
 /**
- * Multiple class inheritance
- * https://stackoverflow.com/a/45332959  
- */
-export function aggregation(baseClass, ...mixins) {
-  class base extends baseClass {
-    constructor(...args) {
-      super(...args);
-      mixins.forEach((mixin) => {
-        copyProps(this, new mixin(...args));
-      });
-    }
-  }
-
-  //This function copies all properties and symbols, filtering out some special ones.
-  let copyProps = (targeted, source) => {
-    Object.getOwnPropertyNames(source)
-      .concat(Object.getOwnPropertySymbols(source))
-      .forEach((prop) => {
-        if (
-          !prop.match(
-            /^(?:constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/
-          ) &&
-          !targeted.hasOwnProperty(prop)
-        ) {
-          Object.defineProperty(
-            targeted,
-            prop,
-            Object.getOwnPropertyDescriptor(source, prop)
-          );
-        }
-      });
-  };
-
-  //Outside contructor() to allow aggregation(A,B,C).staticFunction() to be called etc.
-  mixins.forEach((mixin) => {
-    copyProps(base.prototype, mixin.prototype);
-    copyProps(base, mixin);
-  });
-  return base;
-}
-
-/**
  * Returns a number within a min and max
  */
 export function clamp(int: number, min: number, max: number): number {
@@ -54,7 +12,7 @@ export function clamp(int: number, min: number, max: number): number {
  * https://stackoverflow.com/a/61783246
  */
 export function containsOnlyEmojis(text: string): string {
-  const onlyEmojis = text.replace(new RegExp("[\u0000-\u1eeff]", "g"), "");
+  const onlyEmojis = text.replace(/[\u0000-\u1eeff]/g, "");
   return onlyEmojis;
   /*
     const visibleChars = text.replace(new RegExp('[\n\r\s]+|( )+', 'g'), '')
@@ -207,15 +165,8 @@ export function setImportantMessage(
  */
 export async function sleep(milliseconds: number) {
   const date = Date.now();
-  let currentDate = null;
+  let curDate = null;
   do {
-    currentDate = Date.now();
-  } while (currentDate - date < milliseconds);
+    curDate = Date.now();
+  } while (curDate - date < milliseconds);
 }
-
-
-
-
-
-
-

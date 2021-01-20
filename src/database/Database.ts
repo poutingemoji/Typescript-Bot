@@ -3,16 +3,13 @@ import { config } from "dotenv";
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
 import Discord from "../base/Discord";
-import playerSchema from "./schemas/Player";
+import playerSchema from "./schemas/player";
 config();
-const models = {
-  Player: mongoose.model("Player", playerSchema),
-  //Setting: mongoose.model("Setting", settingSchema),
-};
 
+const playerModel = mongoose.model("Player", playerSchema);
 export default class Database extends Discord {
   constructor(client, info) {
-    super(client, info)
+    super(client, info);
 
     this.client
       .setProvider(
@@ -69,33 +66,32 @@ export default class Database extends Discord {
   }
   */
 
-  //save
-  private async updateDocument(singularCollectionName, filter, update) {
-    return await models[singularCollectionName].updateOne(filter, update, {
+  private async updateDocument(model, filter, update) {
+    return await model.updateOne(filter, update, {
       upsert: true,
     });
   }
 
-  private async findDocument(singularCollectionName, filter) {
-    return await models[singularCollectionName].findOne(filter);
+  private async findDocument(model, filter) {
+    return await model.findOne(filter);
   }
 
-  private async replaceDocument(singularCollectionName, filter, update) {
-    return await models[singularCollectionName].replaceOne(filter, update, {
+  private async replaceDocument(model, filter, update) {
+    return await model.replaceOne(filter, update, {
       upsert: true,
     });
   }
 
   protected async updatePlayer(update) {
     return await this.updateDocument(
-      "Player",
+      playerModel,
       { discordId: update.discordId },
       update
     );
   }
 
-  protected async findPlayer(update) {
-    return await this.findDocument("Player", { discordId: update.discordId });
+  protected async findPlayer(discordId) {
+    return await this.findDocument(playerModel, { discordId });
   }
 
   /**
@@ -104,6 +100,10 @@ export default class Database extends Discord {
    * @returns Random value
    */
   protected async replacePlayer(discordId: string) {
-    return await this.replaceDocument("Player", { discordId }, { discordId });
+    return await this.replaceDocument(
+      playerModel,
+      { discordId },
+      { discordId }
+    );
   }
 }

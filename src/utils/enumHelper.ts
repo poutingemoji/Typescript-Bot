@@ -13,3 +13,6 @@ export const commandGroups = {
   general_info: "General Info Commands",
   user_info: "User Info Commands",
 };
+export const expFormulas = {
+  player: "floor((n-1)*125)",
+};

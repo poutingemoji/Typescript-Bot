@@ -6,18 +6,30 @@ import {
   MessageEmbedOptions,
   User,
 } from "discord.js";
-import { Command as BaseCommand, CommandInfo, CommandoClient } from "discord.js-commando";
+import {
+  Command as CommandoCommand,
+  CommandInfo,
+  CommandoClient,
+} from "discord.js-commando";
 import emojis from "../data/emojis";
 import { waitingOnResponse } from "../utils/enumHelper";
 import { containsOnlyEmojis } from "../utils/Helper";
+import { Embeds } from "discord-paginationembed";
 
 interface MessageEmbedCustomOptions {
-  embed?: MessageEmbed;
+  embed?: MessageEmbed | Embeds;
   author?: User;
   file?: {
     path: string;
     name?: string;
   };
+}
+
+interface MessageEmbedsOptions extends MessageEmbedCustomOptions {
+  title: string;
+  pageLength: number;
+  startingIndex: number;
+  globalNumbering: boolean;
 }
 
 interface AwaitOptions {
@@ -32,7 +44,7 @@ interface AwaitOptions {
 
 type AwaitType = "MESSAGE" | "REACTION";
 
-export default class Discord extends BaseCommand {
+export default class Discord extends CommandoCommand {
   constructor(client: CommandoClient, info: CommandInfo) {
     super(client, info);
   }
@@ -118,6 +130,83 @@ export default class Discord extends BaseCommand {
     return messageEmbed;
   }
 
+  protected async buildEmbeds(
+    msg,
+    data: object,
+    formatFilter: (item, i: number) => string,
+    options: MessageEmbedsOptions
+  ) {
+    const {
+      author,
+      title,
+      pageLength,
+      startingIndex,
+      globalNumbering,
+    } = options;
+    if (data instanceof Map) data = Array.from(data.keys());
+    if (data instanceof Array) data = { "": data };
+    const firstKey = Object.keys(data)[0];
+    if (data[firstKey].length == 0)
+      return msg.reply(
+        `Your \`${title} | ${
+          firstKey.length == 0 ? "" : firstKey
+        }\` is empty. 😔`
+      );
+
+    const categories = Object.keys(data);
+    const embeds = [];
+    let startingPage = 1;
+    let globalIndex = 0;
+
+    for (let i = 0; i < categories.length; i++) {
+      const categoryData = data[categories[i]];
+      const { maxPage } = this.paginate(categoryData, 1, pageLength);
+      for (let page = 0; page < maxPage; page++) {
+        const { items } = this.paginate(categoryData, page + 1, pageLength);
+        let description = "";
+        console.log("ITEMS", items);
+        for (let i = 0; i < items.length; i++) {
+          if (globalIndex == startingIndex) startingPage = page + 1;
+          description += `${await formatFilter(
+            items[i],
+            globalNumbering ? globalIndex : i
+          )}\n`;
+          globalIndex++;
+        }
+        embeds.push(
+          new MessageEmbed()
+            .setTitle(
+              `${author ? `${author.username}'s ` : ""}${title}${
+                categories[i] !== "" ? ` | ${categories[i]}` : ""
+              }`
+            )
+            .setDescription(description)
+            .setFooter(`Page ${page} of ${maxPage}`)
+        );
+      }
+    }
+    delete options.title;
+    console.log("STARTING PAGE", startingPage);
+    options.embed = new Embeds()
+      .setArray(embeds)
+      .setAuthorizedUsers([msg.author.id])
+      .setChannel(msg.channel)
+      .setPage(startingPage)
+      .setClientAssets({
+        msg,
+        prompt: "{{user}}, Which page would you like to see?",
+      })
+      .setNavigationEmojis({
+        back: "⬅️",
+        delete: emojis.red_cross,
+        forward: "➡️",
+        jump: "🔢",
+      })
+      .setDisabledNavigationEmojis(["delete"])
+      .setPageIndicator("footer");
+    await this.buildEmbed(options).build();
+  }
+
   protected async confirmation(author, msg, response) {
     const awaitOptions: AwaitOptions = {
       chooseFrom: ["green_check", "red_cross"],
@@ -138,8 +227,24 @@ export default class Discord extends BaseCommand {
     const emojiId = this.client.emojis.cache.get(str)
       ? str //already emojiId
       : emojis[emojis.hasOwnProperty(str) ? str : snakeCase(str)]; //was an emoji name or try to make it an emoji name
-    if (!this.client.emojis.cache.get(emojiId)) 
+    if (!this.client.emojis.cache.get(emojiId))
       return emojis.hasOwnProperty(str) ? emojiId : str; //return the unicode emoji or the string
     return this.client.emojis.cache.get(emojiId).toString(); //return the custom emoji
+  }
+
+  private paginate(items, page = 1, pageLength = 10) {
+    const maxPage = Math.ceil(items.length / pageLength);
+    if (page < 1) page = 1;
+    if (page > maxPage) page = maxPage;
+    const startIndex = (page - 1) * pageLength;
+    return {
+      items:
+        items.length > pageLength
+          ? items.slice(startIndex, startIndex + pageLength)
+          : items,
+      page,
+      maxPage,
+      pageLength,
+    };
   }
 }
