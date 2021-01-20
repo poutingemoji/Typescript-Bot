@@ -1,7 +1,7 @@
 import { Parser } from "expr-eval";
 import Database from "../database/Database";
 
-export default class Game extends Database {
+export default class Command extends Database {
   constructor(client, info) {
     super(client, info);
   }

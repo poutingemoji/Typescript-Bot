@@ -1,5 +1,5 @@
-import Game from "../../base/Game";
-export default class StartCommand extends Game {
+import Command from "../../base/Command";
+export default class StartCommand extends Command {
   constructor(client) {
     super(client, {
       name: "start",
@@ -14,7 +14,7 @@ export default class StartCommand extends Game {
   }
 
   async run(msg) {
-    this.replacePlayer(msg.author.id)
+    this.replacePlayer(msg.author.id);
 
     return msg.say(
       this.buildEmbed({ title: "ya", color: "#c362cb" }, { author: msg.author })

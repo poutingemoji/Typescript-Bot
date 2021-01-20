@@ -2,7 +2,7 @@ import MongoDBProvider from "commando-mongodb";
 import { config } from "dotenv";
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
-import Discord from "./../base/Discord";
+import Discord from "../base/Discord";
 import playerSchema from "./schemas/Player";
 config();
 const models = {
@@ -103,7 +103,7 @@ export default class Database extends Discord {
    * @param arr
    * @returns Random value
    */
-  protected async replacePlayer(discordId) {
+  protected async replacePlayer(discordId: string) {
     return await this.replaceDocument("Player", { discordId }, { discordId });
   }
 }
