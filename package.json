@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "scripts": {
-    "build": "ts-node src/index.ts --force"
+    "build": "ts-node src/index.ts"
   },
   "author": "poutingemoji",
   "license": "ISC",
