@@ -49,7 +49,7 @@ export default class Command extends Database {
   }
 
   /*
-  protected getObjectStats(player, value, level = false) {
+  protected combineData(player, value, lvl = false) {
     if (!["object", "string"].includes(typeof value)) return;
     if (typeof value == "string") value = { id: value };
 
@@ -66,17 +66,17 @@ export default class Command extends Database {
       value
     );
 
-    if (!level) {
+    if (!lvl) {
       switch (Object.getPrototypeOf(obj.constructor).name) {
         case "Character":
           obj = Object.assign(obj, player.characters.get(id));
-          level = obj.level.cur;
+          lvl = obj.lvl.cur;
           break;
         case "Weapon":
-          level = obj.level;
+          lvl = obj.lvl;
           break;
         case "Enemy":
-          level = player.level.cur;
+          lvl = player.lvl.cur;
           break;
       }
     }
@@ -85,7 +85,7 @@ export default class Command extends Database {
       obj.stats[statId] = Parser.evaluate(
         statFormulas[Object.getPrototypeOf(obj.constructor).name.toLowerCase()],
         {
-          n: level,
+          lvl,
           x: obj.baseStats[statId],
         }
       );
@@ -99,7 +99,7 @@ export default class Command extends Database {
     }
     return obj;
     //Calculate stats
-    //Calculate talent level
+    //Calculate talent lvl
   }
 */
 
@@ -132,7 +132,7 @@ export default class Command extends Database {
     );
     console.log("TYPE", item.type);
     if (itemCategories.equipment.includes(item.type)) {
-      player.equipment.push({ id: item.id, level: item.level });
+      player.equipment.push({ id: item.id, lvl: item.lvl });
     } else {
       player.inventory.get(itemId)
         ? player.inventory.set(itemId, player.inventory.get(itemId) + amount)
@@ -216,11 +216,11 @@ export default class Command extends Database {
 
 function addExp(obj, expToAdd: number, expFormula: string) {
   obj.exp.cur += expToAdd;
-  while (obj.exp.cur >= obj.exp.max && obj.level.cur < obj.level.max) {
-    obj.level.cur++;
+  while (obj.exp.cur >= obj.exp.max && obj.lvl.cur < obj.lvl.max) {
+    obj.lvl.cur++;
     obj.exp.cur -= obj.exp.max;
     obj.exp.max = Parser.evaluate(expFormula, {
-      n: obj.level.cur + 1,
+      lvl: obj.lvl.cur + 1,
     });
   }
 }

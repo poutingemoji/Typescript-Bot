@@ -140,10 +140,10 @@ export default class Discord extends CommandoCommand {
     data: object,
     formatFilter: (item, i: number) => string,
     options: MessageEmbedOptions,
-    customOptions: EmbedsOptions
+    customOptions: Partial<EmbedsOptions> = {}
   ) {
     const {
-      author,
+      author = false,
       title,
       pageLength,
       startingIndex,
@@ -152,6 +152,7 @@ export default class Discord extends CommandoCommand {
     if (data instanceof Map) data = Array.from(data.keys());
     if (data instanceof Array) data = { "": data };
     const firstKey = Object.keys(data)[0];
+    console.log(data, firstKey)
     if (data[firstKey].length == 0)
       return msg.reply(
         `Your \`${title} | ${

@@ -1,18 +1,18 @@
 import { Schema } from "mongoose";
 import { Parser } from "expr-eval";
-import { expFormulas } from "../../utils/enumHelper";
+import { expFormulas, ascensions } from "../../utils/enumHelper";
 
 export default new Schema({
   id: String,
-  level: {
+  lvl: {
     cur: { type: Number, default: 1 },
-    max: { type: Number, default: 10 },
+    max: { type: Number, default: ascensions[0].lvl },
   },
   exp: {
     cur: { type: Number, default: 0 },
     max: {
       type: Number,
-      default: Parser.evaluate(expFormulas.mediumFast, { n: 2 }),
+      default: Parser.evaluate(expFormulas.mediumFast, { lvl: 2 }),
     },
   },
 });

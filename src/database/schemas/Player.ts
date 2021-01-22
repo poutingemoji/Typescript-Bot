@@ -1,20 +1,20 @@
 import { Parser } from "expr-eval";
 import { Schema } from "mongoose";
-import { expFormulas } from "../../utils/enumHelper";
+import { expFormulas, ascensions } from "../../utils/enumHelper";
 import artifactSchema from "./artifact";
 import characterSchema from "./character";
 import weaponSchema from "./weapon";
 export default new Schema({
   discordId: String,
-  level: {
+  ar: {
     cur: { type: Number, default: 1 },
-    max: { type: Number, default: 25 },
+    max: { type: Number, default: ascensions[2].ar },
   },
   exp: {
     cur: { type: Number, default: 0 },
     max: {
       type: Number,
-      default: Parser.evaluate(expFormulas.mediumSlow, { n: 2 }),
+      default: Parser.evaluate(expFormulas.mediumSlow, { lvl: 2 }),
     },
   },
   mora: { type: Number, default: 0 },

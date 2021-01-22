@@ -1,9 +1,9 @@
 {
-  "name": "poutingrpg",
+  "name": "poutingbot",
   "version": "1.0.0",
   "main": "src/index.ts",
   "scripts": {
-    "build": "ts-node src/index.ts"
+    "build": "ts-node src/index.ts --force"
   },
   "author": "poutingemoji",
   "license": "ISC",

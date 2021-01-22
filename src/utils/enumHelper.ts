@@ -14,8 +14,18 @@ export const commandGroups = {
   user_info: "User Info Commands",
 };
 export const expFormulas = {
-  fast: "floor(((4*n)^3)/5)",
-  mediumFast: "floor(n^3)",
-  mediumSlow: "floor((6/5*n^3)-(15*n^2)+(100*n)-140)",
-  slow: "floor(((5*n)^3)/4)",
+  fast: "floor(((4*lvl)^3)/5)",
+  mediumFast: "floor(lvl^3)",
+  mediumSlow: "floor((6/5*lvl^3)-(15*lvl^2)+(100*lvl)-140)",
+  slow: "floor(((5*lvl)^3)/4)",
 };
+
+export const ascensions = [
+  { lvl: 20, ar: 0 },
+  { lvl: 40, ar: 15 },
+  { lvl: 50, ar: 25 },
+  { lvl: 60, ar: 30 },
+  { lvl: 70, ar: 35 },
+  { lvl: 80, ar: 40 },
+  { lvl: 90, ar: 50 },
+];
