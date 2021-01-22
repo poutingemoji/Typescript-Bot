@@ -1,4 +1,4 @@
-import MongoDBProvider from "commando-mongodb";
+//import MongoDBProvider from "commando-mongodb";
 import { config } from "dotenv";
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
@@ -10,8 +10,8 @@ const playerModel = mongoose.model("Player", playerSchema);
 export default class Database extends Discord {
   constructor(client, info) {
     super(client, info);
-
-    this.client
+    /*
+        this.client
       .setProvider(
         MongoClient.connect(process.env.MONGODB_URI, {
           useUnifiedTopology: true,
@@ -19,6 +19,7 @@ export default class Database extends Discord {
         }).then((client) => new MongoDBProvider(client))
       )
       .catch(console.error);
+     */
 
     mongoose.connection.on("error", (err) => {
       console.error(err);
