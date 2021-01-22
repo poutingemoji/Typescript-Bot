@@ -28,19 +28,23 @@ export default class Command extends Database {
     return Object.assign(player, user);
   }
 
-  protected async addValueToPlayer(player, key, value) {
+  protected async addValueToPlayer(player, key: string, value: number) {
     player[key] += value;
     //await this.updateQuestProgress(player, "Earn", key, value);
     return this.updatePlayer(player);
   }
 
-  protected async setValueToPlayer(player, key, value) {
+  protected async setValueToPlayer(
+    player,
+    key: string,
+    value: boolean | number | string
+  ) {
     player[key] = value;
     return this.updatePlayer(player);
   }
 
   protected addExpToPlayer(player, expToAdd: number) {
-    addExp(player, expToAdd, expFormulas["player"]);
+    addExp(player, expToAdd, expFormulas.mediumSlow);
     this.updatePlayer(player);
   }
 

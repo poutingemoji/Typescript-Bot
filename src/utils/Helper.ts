@@ -20,7 +20,7 @@ export function containsOnlyEmojis(text: string): string {
   */
 }
 
-export function convertArrayToObject(array: any[], key: string = "id") {
+export function convertArrayToObject(array: unknown[], key: string = "id") {
   return array.reduce((obj, item) => {
     obj[item[key]] = item;
     return obj;
@@ -30,7 +30,7 @@ export function convertArrayToObject(array: any[], key: string = "id") {
 /**
  * Fills the given array with the given value x times.
  */
-export function fillArray(value: any, length: number, arr: any[] = []) {
+export function fillArray(value: unknown, length: number, arr: unknown[] = []) {
   for (let i = 0; i < length; i++) {
     arr.push(value);
   }
@@ -60,7 +60,7 @@ export function getTimePassed(timestamp: Date): number {
 /**
  * Groups values of an array into categories and returns as an object
  */
-export function groupBy(arr: any[], fn: (arg0: any) => string): Object {
+export function groupBy(arr: unknown[], fn: (arg0: unknown) => string): Object {
   return arr.reduce((result, item) => {
     const key = fn(item);
     if (!result[key]) result[key] = [];
@@ -114,11 +114,11 @@ export function randomBetween(min: number, max: number): number {
 /**
  * Returns a random value from an array
  */
-export function randomChoice(arr: any[]) {
+export function randomChoice(arr: unknown[]) {
   return arr[randomBetween(0, arr.length - 1)];
 }
 
-export function randomWeightedChoice(arr: any[], prop: string = "weight") {
+export function randomWeightedChoice(arr: unknown[], prop: string = "weight") {
   return randomChoice(
     [].concat(...arr.map((obj) => Array(Math.ceil(obj[prop] * 100)).fill(obj)))
   );

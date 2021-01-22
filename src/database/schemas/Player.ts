@@ -14,7 +14,7 @@ export default new Schema({
     cur: { type: Number, default: 0 },
     max: {
       type: Number,
-      default: Parser.evaluate(expFormulas["mediumSlow"], { n: 2 }),
+      default: Parser.evaluate(expFormulas.mediumSlow, { n: 2 }),
     },
   },
   mora: { type: Number, default: 0 },

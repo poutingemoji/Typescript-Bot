@@ -210,7 +210,7 @@ export default class Discord extends CommandoCommand {
       })
       .setDisabledNavigationEmojis(["delete"])
       .setPageIndicator("footer");
-    const embeds = this.buildEmbed(options, customOptions) as Embeds 
+    const embeds = this.buildEmbed(options, customOptions) as Embeds;
     embeds.build();
   }
 
@@ -239,7 +239,7 @@ export default class Discord extends CommandoCommand {
     return this.client.emojis.cache.get(emojiId).toString(); //return the custom emoji
   }
 
-  private paginate(items, page = 1, pageLength = 10) {
+  private paginate(items: unknown[], page: number = 1, pageLength: number = 10) {
     const maxPage = Math.ceil(items.length / pageLength);
     if (page < 1) page = 1;
     if (page > maxPage) page = maxPage;

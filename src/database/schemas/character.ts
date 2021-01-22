@@ -10,7 +10,7 @@ export default new Schema({
     cur: { type: Number, default: 0 },
     max: {
       type: Number,
-      default: Parser.evaluate(expFormulas["mediumFast"], { n: 2 }),
+      default: Parser.evaluate(expFormulas.mediumFast, { n: 2 }),
     },
   },
 });
