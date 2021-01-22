@@ -27,11 +27,13 @@ interface MessageEmbedCustomOptions {
   };
 }
 
-interface MessageEmbedsOptions extends MessageEmbedCustomOptions {
+interface EmbedsOptions {
+  embed: Embeds;
+  author: User;
   title: string;
   pageLength: number;
   startingIndex: number;
-  globalNumbering: boolean;
+  globalIndexing: boolean;
 }
 
 interface AwaitOptions {
@@ -112,7 +114,7 @@ export default class Discord extends CommandoCommand {
   protected buildEmbed(
     options: MessageEmbedOptions,
     customOptions?: Partial<MessageEmbedCustomOptions>
-  ) {
+  ): MessageEmbed | Embeds {
     const messageEmbed = Object.assign(
       customOptions.embed || new MessageEmbed(),
       options
@@ -124,9 +126,9 @@ export default class Discord extends CommandoCommand {
       }
       if (customOptions.hasOwnProperty("file")) {
         const { file } = customOptions;
-        messageEmbed.attachFiles(
-          new MessageAttachment(file.path, `${file.name}.png`)
-        );
+        messageEmbed.attachFiles([
+          new MessageAttachment(file.path, `${file.name}.png`),
+        ]);
         messageEmbed.setImage(`attachment://${file.name}.png`);
       }
     }
@@ -137,15 +139,16 @@ export default class Discord extends CommandoCommand {
     msg: Message,
     data: object,
     formatFilter: (item, i: number) => string,
-    options: MessageEmbedsOptions
+    options: MessageEmbedOptions,
+    customOptions: EmbedsOptions
   ) {
     const {
       author,
       title,
       pageLength,
       startingIndex,
-      globalNumbering,
-    } = options;
+      globalIndexing,
+    } = customOptions;
     if (data instanceof Map) data = Array.from(data.keys());
     if (data instanceof Array) data = { "": data };
     const firstKey = Object.keys(data)[0];
@@ -157,7 +160,7 @@ export default class Discord extends CommandoCommand {
       );
 
     const categories = Object.keys(data);
-    const embeds = [];
+    const array = [];
     let startingPage = 1;
     let globalIndex = 0;
 
@@ -172,15 +175,15 @@ export default class Discord extends CommandoCommand {
           if (globalIndex == startingIndex) startingPage = page + 1;
           description += `${await formatFilter(
             items[i],
-            globalNumbering ? globalIndex : i
+            globalIndexing ? globalIndex : i
           )}\n`;
           globalIndex++;
         }
-        embeds.push(
+        array.push(
           new MessageEmbed()
             .setTitle(
               `${author ? `${author.username}'s ` : ""}${title}${
-                categories[i] !== "" ? ` | ${categories[i]}` : ""
+                categories[i].length > 0 ? ` | ${categories[i]}` : ""
               }`
             )
             .setDescription(description)
@@ -190,8 +193,8 @@ export default class Discord extends CommandoCommand {
     }
     delete options.title;
     console.log("STARTING PAGE", startingPage);
-    options.embed = new Embeds()
-      .setArray(embeds)
+    customOptions.embed = new Embeds()
+      .setArray(array)
       .setAuthorizedUsers([msg.author.id])
       .setChannel(msg.channel as TextChannel | DMChannel)
       .setPage(startingPage)
@@ -207,7 +210,8 @@ export default class Discord extends CommandoCommand {
       })
       .setDisabledNavigationEmojis(["delete"])
       .setPageIndicator("footer");
-    await this.buildEmbed(options).build();
+    const embeds = this.buildEmbed(options, customOptions) as Embeds 
+    embeds.build();
   }
 
   protected async confirmation(msg: Message, response?: string) {

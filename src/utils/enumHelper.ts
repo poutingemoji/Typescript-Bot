@@ -14,5 +14,8 @@ export const commandGroups = {
   user_info: "User Info Commands",
 };
 export const expFormulas = {
-  player: "floor((n-1)*125)",
+  fast: "floor(((4*n)^3)/5)",
+  mediumFast: "floor(n^3)",
+  mediumSlow: "floor((6/5*n^3)-(15*n^2)+(100*n)-140)",
+  slow: "floor(((5*n)^3)/4)",
 };
