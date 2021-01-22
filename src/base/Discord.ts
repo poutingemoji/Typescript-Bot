@@ -1,5 +1,7 @@
 import { snakeCase } from "change-case";
 import {
+  DMChannel,
+  TextChannel,
   Message,
   MessageAttachment,
   MessageEmbed,
@@ -17,9 +19,9 @@ import { containsOnlyEmojis } from "../utils/Helper";
 import { Embeds } from "discord-paginationembed";
 
 interface MessageEmbedCustomOptions {
-  embed?: MessageEmbed | Embeds;
-  author?: User;
-  file?: {
+  embed: MessageEmbed | Embeds;
+  author: User;
+  file: {
     path: string;
     name?: string;
   };
@@ -33,13 +35,14 @@ interface MessageEmbedsOptions extends MessageEmbedCustomOptions {
 }
 
 interface AwaitOptions {
-  reactToMessage?: boolean;
-  removeAllReactions?: boolean;
-  removeResponses?: boolean;
-  deleteOnResponse?: boolean;
-  filter?: () => boolean;
-  chooseFrom?: string[];
-  responseWaitTime?: number;
+  author: User;
+  deleteOnResponse: boolean;
+  reactToMessage: boolean;
+  removeAllReactions: boolean;
+  removeResponse: boolean;
+  chooseFrom: string[];
+  filter: (...args) => boolean;
+  responseWaitTime: number;
 }
 
 type AwaitType = "MESSAGE" | "REACTION";
@@ -50,60 +53,60 @@ export default class Discord extends CommandoCommand {
   }
 
   protected async awaitResponse(
-    author: User,
     msg: Message,
     type: AwaitType,
     options: Partial<AwaitOptions>
   ) {
     const {
+      author,
+      deleteOnResponse = false,
+      removeResponse = false,
       reactToMessage = true,
       removeAllReactions = false,
-      removeResponses = false,
-      deleteOnResponse = false,
-      filter,
       chooseFrom,
+      filter,
       responseWaitTime = 60000,
     } = options;
 
-    if (reactToMessage)
-      for (let choice of chooseFrom) await msg.react(emojis[choice] || choice);
-
-    //Wait for a response and then clear from 'waitingOnResponse', return if there isn't a response.
-    const messageFilter = (response) => response.author.id == author.id;
-    const reactionFilter = (reaction, user) =>
-      (chooseFrom.includes(reaction.emoji.id) ||
-        chooseFrom.includes(reaction.emoji.name)) &&
-      user.id == author.id;
-    const awaitParams = { max: 1, time: responseWaitTime, errors: ["time"] };
-    waitingOnResponse.add(author.id);
-    const collected =
-      type == "MESSAGE"
-        ? await msg.channel
-            .awaitMessages(filter || messageFilter, awaitParams)
-            .catch(console.error)
-        : await msg
-            .awaitReactions(filter || reactionFilter, awaitParams)
-            .catch(console.error);
-    waitingOnResponse.delete(author.id);
-    if (collected == null) return;
-
-    //Check other parameters and return response
-    if (deleteOnResponse) msg.delete();
-    if (removeAllReactions) msg.reactions.removeAll().catch(console.error);
-    if (removeResponses) {
-      type == "MESSAGE"
-        ? collected.first().delete()
-        : msg.reactions
+    const awaitOptions = { max: 1, time: responseWaitTime };
+    if (author) waitingOnResponse.add(author.id);
+    let collected;
+    switch (type) {
+      case "MESSAGE":
+        collected = await msg.channel.awaitMessages(function (response) {
+          if (author) if (!(response.author.id == author.id)) return;
+          if (chooseFrom) if (!chooseFrom.includes(response.content)) return;
+          return filter ? filter(response) : true;
+        }, awaitOptions);
+        if (!checkOptions(collected).size) return;
+        if (removeResponse) collected.first().delete();
+        return collected.first().content;
+      case "REACTION":
+        if (reactToMessage)
+          for (let choice of chooseFrom)
+            await msg.react(emojis[choice] || choice);
+        collected = await msg.awaitReactions(function (reaction, user) {
+          if (author) if (!(user.id == author.id)) return;
+          if (chooseFrom) if (!chooseFrom.includes(reaction.emoji.name)) return;
+          return filter ? filter(reaction, user) : true;
+        }, awaitOptions);
+        if (!checkOptions(collected).size) return;
+        if (removeResponse)
+          msg.reactions
             .resolve(
               collected.first().emoji.id
                 ? collected.first().emoji.id
                 : collected.first().emoji.name
             )
             .users.remove(author.id);
+        if (removeAllReactions) msg.reactions.removeAll().catch(console.error);
+        return collected.first().emoji.name;
     }
-    return type == "MESSAGE"
-      ? collected.first().content
-      : collected.first().emoji.name;
+    function checkOptions(collected) {
+      if (author) waitingOnResponse.delete(author.id);
+      if (deleteOnResponse) msg.delete();
+      return collected;
+    }
   }
 
   protected buildEmbed(
@@ -131,7 +134,7 @@ export default class Discord extends CommandoCommand {
   }
 
   protected async buildEmbeds(
-    msg,
+    msg: Message,
     data: object,
     formatFilter: (item, i: number) => string,
     options: MessageEmbedsOptions
@@ -190,10 +193,10 @@ export default class Discord extends CommandoCommand {
     options.embed = new Embeds()
       .setArray(embeds)
       .setAuthorizedUsers([msg.author.id])
-      .setChannel(msg.channel)
+      .setChannel(msg.channel as TextChannel | DMChannel)
       .setPage(startingPage)
       .setClientAssets({
-        msg,
+        message: msg,
         prompt: "{{user}}, Which page would you like to see?",
       })
       .setNavigationEmojis({
@@ -207,15 +210,15 @@ export default class Discord extends CommandoCommand {
     await this.buildEmbed(options).build();
   }
 
-  protected async confirmation(author, msg, response) {
-    const awaitOptions: AwaitOptions = {
+  protected async confirmation(msg: Message, response?: string) {
+    const awaitOptions: Partial<AwaitOptions> = {
+      author: msg.author,
       chooseFrom: ["green_check", "red_cross"],
     };
     response
       ? (awaitOptions.deleteOnResponse = true)
       : (awaitOptions.removeAllReactions = true);
     const res = await this.awaitResponse(
-      response ? msg.author : author,
       response ? await msg.reply(response) : msg,
       "REACTION",
       awaitOptions

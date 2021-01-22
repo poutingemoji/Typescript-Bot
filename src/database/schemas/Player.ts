@@ -1,9 +1,9 @@
-import { Schema } from "mongoose";
 import { Parser } from "expr-eval";
+import { Schema } from "mongoose";
 import { expFormulas } from "../../utils/enumHelper";
+import artifactSchema from "./artifact";
 import characterSchema from "./character";
 import weaponSchema from "./weapon";
-import artifactSchema from "./artifact";
 export default new Schema({
   discordId: String,
   level: {

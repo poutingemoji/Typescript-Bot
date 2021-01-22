@@ -5,7 +5,11 @@ import { writeFile } from "fs";
 import { join } from "path";
 import { commandGroups, waitingOnResponse } from "../utils/enumHelper";
 import { secondsToTimeFormat } from "../utils/Helper";
+import {
+  Message,
+} from "discord.js";
 config();
+
 
 export default class Client extends CommandoClient {
   public init(): void {
@@ -21,7 +25,7 @@ export default class Client extends CommandoClient {
         reason: "yes",
         response: msg.reply(
           "Please respond to the previous command before executing another."
-        ),
+        ) as Promise<Message>,
       };
     });
 
