@@ -18,7 +18,7 @@ export default class InventoryCommand extends Command {
   async run(msg) {
     const player = await this.getPlayer(msg.author);
     if (!player) return;
-    return this.buildEmbeds(
+    this.buildEmbeds(
         msg,
         player.inventory.toObject(),
         function(item, i) {

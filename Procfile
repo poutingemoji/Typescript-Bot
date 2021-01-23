@@ -1,1 +1,1 @@
-worker: node index.ts --force
+worker: node index.ts 

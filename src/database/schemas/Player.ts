@@ -29,6 +29,7 @@ export default new Schema({
     weapons: {
       type: Array,
       of: weaponSchema,
+      default: [{id: "sword"}]
     },
     artifacts: {
       type: Array,

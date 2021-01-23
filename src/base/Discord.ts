@@ -144,7 +144,6 @@ export default class Discord extends CommandoCommand {
   ) {
     const {
       author = false,
-      title,
       pageLength,
       startingIndex,
       globalIndexing,
@@ -155,7 +154,7 @@ export default class Discord extends CommandoCommand {
     console.log(data, firstKey)
     if (data[firstKey].length == 0)
       return msg.reply(
-        `Your \`${title} | ${
+        `Your \`${options.title} | ${
           firstKey.length == 0 ? "" : firstKey
         }\` is empty. 😔`
       );
@@ -183,7 +182,7 @@ export default class Discord extends CommandoCommand {
         array.push(
           new MessageEmbed()
             .setTitle(
-              `${author ? `${author.username}'s ` : ""}${title}${
+              `${author ? `${author.username}'s ` : ""}${options.title}${
                 categories[i].length > 0 ? ` | ${categories[i]}` : ""
               }`
             )
@@ -197,7 +196,7 @@ export default class Discord extends CommandoCommand {
     customOptions.embed = new Embeds()
       .setArray(array)
       .setAuthorizedUsers([msg.author.id])
-      .setChannel(msg.channel as TextChannel | DMChannel)
+      .setChannel(msg.channel)
       .setPage(startingPage)
       .setClientAssets({
         message: msg,
@@ -211,8 +210,12 @@ export default class Discord extends CommandoCommand {
       })
       .setDisabledNavigationEmojis(["delete"])
       .setPageIndicator("footer");
+      console.log("YES1");
+
     const embeds = this.buildEmbed(options, customOptions) as Embeds;
+    console.log("YES")
     embeds.build();
+    console.log("YE3");
   }
 
   protected async confirmation(msg: Message, response?: string) {
