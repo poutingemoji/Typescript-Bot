@@ -17,32 +17,31 @@ import { containsOnlyEmojis } from "../utils/Helper";
 import { Embeds } from "discord-paginationembed";
 
 interface MessageEmbedCustomOptions {
-  embed: MessageEmbed | Embeds;
-  author: User;
-  file: {
+  embed?: MessageEmbed | Embeds;
+  author?: User;
+  file?: {
     path: string;
     name?: string;
   };
 }
 
 interface EmbedsOptions {
-  embed: Embeds;
-  author: User;
-  title: string;
-  pageLength: number;
-  startingIndex: number;
-  globalIndexing: boolean;
+  embed?: Embeds;
+  author?: User;
+  globalIndexing?: boolean;
+  pageLength?: number;
+  startingIndex?: number;
 }
 
 interface AwaitOptions {
-  author: User;
-  deleteOnResponse: boolean;
-  reactToMessage: boolean;
-  removeAllReactions: boolean;
-  removeResponse: boolean;
-  chooseFrom: string[];
-  filter: (...args) => boolean;
-  responseWaitTime: number;
+  author?: User;
+  deleteOnResponse?: boolean;
+  reactToMessage?: boolean;
+  removeAllReactions?: boolean;
+  removeResponse?: boolean;
+  chooseFrom?: string[];
+  filter?: (...args) => boolean;
+  responseWaitTime?: number;
 }
 
 type AwaitType = "MESSAGE" | "REACTION";
@@ -55,7 +54,7 @@ export default class Discord extends CommandoCommand {
   protected async awaitResponse(
     msg: Message,
     type: AwaitType,
-    options: Partial<AwaitOptions>
+    options: AwaitOptions
   ) {
     const {
       author,
@@ -111,14 +110,17 @@ export default class Discord extends CommandoCommand {
 
   protected buildEmbed(
     options: MessageEmbedOptions,
-    customOptions?: Partial<MessageEmbedCustomOptions>
+    customOptions?: MessageEmbedCustomOptions
   ): MessageEmbed | Embeds {
     const messageEmbed = Object.assign(
       customOptions.embed || new MessageEmbed(),
       options
     );
     if (customOptions) {
-      if (customOptions.hasOwnProperty("author")) {
+      if (
+        customOptions.hasOwnProperty("author") &&
+        options.hasOwnProperty("title")
+      ) {
         const { author } = customOptions;
         messageEmbed.setTitle(`${author.username}'s ${options.title}`);
       }
@@ -137,67 +139,64 @@ export default class Discord extends CommandoCommand {
     msg: Message,
     data: object,
     formatFilter: (item, i: number) => string,
-    options: MessageEmbedOptions,
-    customOptions: Partial<EmbedsOptions> = {}
+    options: MessageEmbedOptions = {},
+    customOptions: EmbedsOptions = {}
   ) {
+    const { title } = options;
     const {
-      author = false,
+      author = msg.author,
+      globalIndexing,
       pageLength,
       startingIndex,
-      globalIndexing,
     } = customOptions;
-    if (data instanceof Map) data = Array.from(data.keys());
+    if (data instanceof Map)
+      data = Array.from(data, ([id, value]) => Object.assign({ id }, value));
     if (data instanceof Array) data = { "": data };
-    const firstKey = Object.keys(data)[0];
-    console.log(data, firstKey)
-    if (data[firstKey].length == 0)
+    const categories = Object.keys(data);
+    if (categories.every((c) => data[c].length == 0))
       return msg.reply(
-        `Your \`${options.title} | ${
-          firstKey.length == 0 ? "" : firstKey
-        }\` is empty. 😔`
+        `Your \`${title} | ${categories.join(", ")}\` is empty. 😔`
       );
 
-    const categories = Object.keys(data);
     const array = [];
     let startingPage = 1;
     let globalIndex = 0;
-
     for (let i = 0; i < categories.length; i++) {
       const categoryData = data[categories[i]];
       const { maxPage } = this.paginate(categoryData, 1, pageLength);
       for (let page = 0; page < maxPage; page++) {
         const { items } = this.paginate(categoryData, page + 1, pageLength);
         let description = "";
-        console.log("ITEMS", items);
         for (let i = 0; i < items.length; i++) {
           if (globalIndex == startingIndex) startingPage = page + 1;
-          description += `${await formatFilter(
+          description += `${formatFilter(
             items[i],
             globalIndexing ? globalIndex : i
           )}\n`;
           globalIndex++;
         }
         array.push(
-          new MessageEmbed()
-            .setTitle(
-              `${author ? `${author.username}'s ` : ""}${options.title}${
+          this.buildEmbed(
+            {
+              title: `${title}${
                 categories[i].length > 0 ? ` | ${categories[i]}` : ""
-              }`
-            )
-            .setDescription(description)
-            .setFooter(`Page ${page} of ${maxPage}`)
+              }`,
+              description,
+              footer: { text: `Page ${page} of ${maxPage}` },
+            },
+            {
+              author,
+            }
+          )
         );
       }
     }
-    delete options.title;
-    console.log("STARTING PAGE", startingPage);
     customOptions.embed = new Embeds()
       .setArray(array)
       .setAuthorizedUsers([msg.author.id])
       .setChannel(msg.channel)
       .setPage(startingPage)
       .setClientAssets({
-        message: msg,
         prompt: "{{user}}, Which page would you like to see?",
       })
       .setNavigationEmojis({
@@ -208,19 +207,13 @@ export default class Discord extends CommandoCommand {
       })
       .setDisabledNavigationEmojis(["delete"])
       .setPageIndicator("footer");
-    console.log("YES1");
-    customOptions.embed.build()
-    console.log("DONE")
-    /*
+    delete options.title;
     const embeds = this.buildEmbed(options, customOptions) as Embeds;
-    console.log("YES")
-    embeds.build();
-    console.log("YE3");
-    */
+    return embeds.build();
   }
 
   protected async confirmation(msg: Message, response?: string) {
-    const awaitOptions: Partial<AwaitOptions> = {
+    const awaitOptions: AwaitOptions = {
       author: msg.author,
       chooseFrom: ["green_check", "red_cross"],
     };
@@ -244,7 +237,11 @@ export default class Discord extends CommandoCommand {
     return this.client.emojis.cache.get(emojiId).toString(); //return the custom emoji
   }
 
-  private paginate(items: unknown[], page: number = 1, pageLength: number = 10) {
+  private paginate(
+    items: unknown[],
+    page: number = 1,
+    pageLength: number = 10
+  ) {
     const maxPage = Math.ceil(items.length / pageLength);
     if (page < 1) page = 1;
     if (page > maxPage) page = maxPage;

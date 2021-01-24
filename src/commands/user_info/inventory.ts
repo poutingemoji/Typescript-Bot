@@ -1,5 +1,5 @@
 import Command from "../../base/Command";
-import { stripIndents } from "common-tags";
+import { links } from "../../utils/enumHelper";
 export default class InventoryCommand extends Command {
   constructor(client) {
     super(client, {
@@ -18,17 +18,18 @@ export default class InventoryCommand extends Command {
   async run(msg) {
     const player = await this.getPlayer(msg.author);
     if (!player) return;
+    /*
+     */
     this.buildEmbeds(
-        msg,
-        player.inventory.toObject(),
-        function(item, i) {
-          console.log(item, i)
-          return "yes"
-        },
-        {
-          color: "#c362cb",
-          title: "Inventory",
-        },
-      )
+      msg,
+      player.inventory.toObject(),
+      function (item, i) {
+        console.log(item, i);
+        return `${i}) [${item.id}](${links.repository}) lvl ${item.lvl.cur} (${item.exp.cur}/${item.exp.max} exp)`;
+      },
+      {
+        title: "Inventory",
+      }
+    );
   }
 }
