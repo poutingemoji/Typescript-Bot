@@ -1,8 +1,15 @@
-import { Parser } from "expr-eval";
-import Database from "../database/Database";
 import { User } from "discord.js";
 import { CommandoMessage } from "discord.js-commando";
+import { Parser } from "expr-eval";
+import artifacts from "../data/artifacts";
+import items from "../data/items";
+import weapons from "../data/weapons";
+import Database from "../database/Database";
+import playerModel from "../database/schemas/player";
 import { expFormulas } from "../utils/enumHelper";
+import { Weapon } from "../utils/game/Weapon";
+import { convertMapToArray } from "../utils/Helper";
+
 export default class Command extends Database {
   constructor(client, info) {
     super(client, info);
@@ -15,17 +22,39 @@ export default class Command extends Database {
         msg.reply(
           msg.author.id == user.id
             ? `Please type \`${msg.guild.commandPrefix}start\` to begin.`
-            : `${user.username} hasn't started climbing the Tower.`
+            : `${user.username} hasn't began their adventure.`
         );
       }
       return false;
     }
+    const inventory = player.inventory.toObject();
+    for (let category in inventory) {
+      const categoryData = inventory[category];
+      if (categoryData instanceof Map) {
+        categoryData.forEach((value, key) => {
+          categoryData.set(key, this.combineData(value));
+        });
+      } else if (categoryData instanceof Array) {
+        for (let i = 0; i < categoryData.length; i++) {
+          categoryData[i] = this.combineData(categoryData[i]);
+        }
+      }
+      /*
+      for (let item of player.inventory.get(category)) {
+        console.log(item);
+        item = this.combineData(item);
+      }
+      console.log("PLAYER", player);
+      */
+    }
+    player.inventory = inventory;
+    console.log(player.inventory.toObject());
     /*
     player.characters.forEach((value, key) =>
-      player.characters.set(key, this.getObjectStats(player, key))
+      player.characters.set(key, this.combineData(player, key))
     );
     */
-    return Object.assign(player, user);
+    return player;
   }
 
   protected async addValueToPlayer(player, key: string, value: number) {
@@ -48,60 +77,45 @@ export default class Command extends Database {
     this.updatePlayer(player);
   }
 
-  /*
-  protected combineData(player, value, lvl = false) {
-    if (!["object", "string"].includes(typeof value)) return;
-    if (typeof value == "string") value = { id: value };
-
+  protected combineData(value, lvl = 1) {
     const { id } = value;
-    const datas = [characters, enemies, items];
-    const data = datas.find((x) => x.hasOwnProperty(id));
+    const datas = Object.assign({}, items, weapons, artifacts);
+    const data = datas[id];
 
-    if (!data[id]) return;
-    if (!data[id].hasOwnProperty("baseStats")) return data[id];
+    if (!data) return;
+    if (!data.hasOwnProperty("baseStats")) return data;
 
-    let obj = Object.assign(
-      { constructor: data[id].constructor, stats: {} },
-      data[id],
-      value
+    const obj = Object.assign(
+      { constructor: data.constructor, stats: {} },
+      data,
+      value,
+      { lvl: value.lvl.cur || lvl }
     );
-
-    if (!lvl) {
-      switch (Object.getPrototypeOf(obj.constructor).name) {
-        case "Character":
-          obj = Object.assign(obj, player.characters.get(id));
-          lvl = obj.lvl.cur;
-          break;
-        case "Weapon":
-          lvl = obj.lvl;
-          break;
-        case "Enemy":
-          lvl = player.lvl.cur;
-          break;
-      }
+    if (value instanceof Weapon) {
     }
 
-    Object.keys(obj.baseStats).map((statId) => {
+    /*
+       Object.keys(obj.baseStats).map((statId) => {
       obj.stats[statId] = Parser.evaluate(
         statFormulas[Object.getPrototypeOf(obj.constructor).name.toLowerCase()],
         {
-          lvl,
+          lvl: obj.lvl,
           x: obj.baseStats[statId],
         }
       );
     });
 
     if (obj.hasOwnProperty("weapon")) {
-      obj.weapon = this.getObjectStats(player, obj.weapon);
+      obj.weapon = this.combineData(player, obj.weapon);
       Object.keys(obj.weapon.stats).map((statId) => {
         obj.stats[statId] += obj.weapon.stats[statId];
       });
     }
+    */
     return obj;
     //Calculate stats
     //Calculate talent lvl
   }
-*/
 
   /*
   //PLAYER

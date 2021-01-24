@@ -16,20 +16,19 @@ export default class InventoryCommand extends Command {
   }
 
   async run(msg) {
-    const player = await this.getPlayer(msg.author);
+    const player = await this.getPlayer(msg.author, msg);
     if (!player) return;
     /*
      */
     this.buildEmbeds(
       msg,
       player.inventory.toObject(),
-      function (item, i) {
-        console.log(item, i);
-        return `${i}) [${item.id}](${links.repository}) lvl ${item.lvl.cur} (${item.exp.cur}/${item.exp.max} exp)`;
+      (item, i) => {
+        console.log(item, i)
+        return "YES"
       },
-      {
-        title: "Inventory",
-      }
+      { title: "Inventory" }
     );
   }
 }
+//`${i}) [${item.id}](${links.repository}) `

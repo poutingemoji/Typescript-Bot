@@ -13,7 +13,7 @@ import {
 } from "discord.js-commando";
 import emojis from "../data/emojis";
 import { waitingOnResponse } from "../utils/enumHelper";
-import { containsOnlyEmojis } from "../utils/Helper";
+import { containsOnlyEmojis, convertMapToArray } from "../utils/Helper";
 import { Embeds } from "discord-paginationembed";
 
 interface MessageEmbedCustomOptions {
@@ -149,9 +149,13 @@ export default class Discord extends CommandoCommand {
       pageLength,
       startingIndex,
     } = customOptions;
-    if (data instanceof Map)
-      data = Array.from(data, ([id, value]) => Object.assign({ id }, value));
+    if (data instanceof Map) data = convertMapToArray(data);
     if (data instanceof Array) data = { "": data };
+    for (let prop in data) {
+      if (!(data[prop] instanceof Map)) continue;
+      data[prop] = convertMapToArray(data[prop]);
+    }
+
     const categories = Object.keys(data);
     if (categories.every((c) => data[c].length == 0))
       return msg.reply(
@@ -161,6 +165,7 @@ export default class Discord extends CommandoCommand {
     const array = [];
     let startingPage = 1;
     let globalIndex = 0;
+
     for (let i = 0; i < categories.length; i++) {
       const categoryData = data[categories[i]];
       const { maxPage } = this.paginate(categoryData, 1, pageLength);
@@ -184,9 +189,7 @@ export default class Discord extends CommandoCommand {
               description,
               footer: { text: `Page ${page} of ${maxPage}` },
             },
-            {
-              author,
-            }
+            { author }
           )
         );
       }

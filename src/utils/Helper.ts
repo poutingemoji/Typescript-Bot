@@ -27,6 +27,13 @@ export function convertArrayToObject(array: unknown[], key: string = "id") {
   }, {});
 }
 
+export function convertMapToArray(map) {
+  if (!(map instanceof Map)) return map;
+  return Array.from(map, ([id, value]) =>
+    typeof value == "object" ? Object.assign({ id }, value) : { id, value }
+  );
+}
+
 /**
  * Fills the given array with the given value x times.
  */

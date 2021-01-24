@@ -29,7 +29,11 @@ export default new Schema({
     weapons: {
       type: Array,
       of: weaponSchema,
-      default: [{id: "sword"}, {id: "pineapple"}, {id: "what bees produce milk"}]
+      default: [
+        { id: "sword" },
+        { id: "pineapple" },
+        { id: "what bees produce milk" },
+      ],
     },
     artifacts: {
       type: Array,
@@ -46,6 +50,7 @@ export default new Schema({
     materials: {
       type: Map,
       of: Number,
+      default: { butterflyWings: 1 },
     },
     gadget: {
       type: Map,

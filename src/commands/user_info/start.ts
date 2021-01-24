@@ -18,7 +18,7 @@ export default class StartCommand extends Command {
     const player = await this.getPlayer(msg.author);
     if (!player) this.replacePlayer(msg.author.id);
     //await this.addExpToPlayer(player, 1000);
-
+    console.log(player)
     /*
     const response = await this.awaitResponse(msg, "REACTION", {
       chooseFrom: ["💚", "💙"],

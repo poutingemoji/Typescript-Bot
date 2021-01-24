@@ -30,3 +30,31 @@ export const ascensions = [
   { lvl: 80, ar: 40 },
   { lvl: 90, ar: 50 },
 ];
+
+export const rarities = [
+  {
+    emoji: "⬜",
+    hex: "#e5e7e9",
+    weight: 30,
+  },
+  {
+    emoji: "🟩",
+    hex: "#79b15a",
+    weight: 25,
+  },
+  {
+    emoji: "🟦",
+    hex: "#55acef",
+    weight: 10,
+  },
+  {
+    emoji: "🟪",
+    hex: "#aa8fd6",
+    weight: 5,
+  },
+  {
+    emoji: "🟨",
+    hex: "#fdcb58",
+    weight: 1,
+  },
+];
