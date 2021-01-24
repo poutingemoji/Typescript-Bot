@@ -1,7 +1,5 @@
 import { snakeCase } from "change-case";
 import {
-  DMChannel,
-  TextChannel,
   Message,
   MessageAttachment,
   MessageEmbed,
@@ -210,12 +208,15 @@ export default class Discord extends CommandoCommand {
       })
       .setDisabledNavigationEmojis(["delete"])
       .setPageIndicator("footer");
-      console.log("YES1");
-
+    console.log("YES1");
+    customOptions.embed.build()
+    console.log("DONE")
+    /*
     const embeds = this.buildEmbed(options, customOptions) as Embeds;
     console.log("YES")
     embeds.build();
     console.log("YE3");
+    */
   }
 
   protected async confirmation(msg: Message, response?: string) {

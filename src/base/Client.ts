@@ -44,7 +44,10 @@ export default class Client extends CommandoClient {
       });
     });
     /*
-    this.on("message", (msg) => {
+        this.on("message", (msg) => {
+      if (msg.author.id == "257641125135908866") {
+        msg.react("👎")
+      }
     });
     */
   }

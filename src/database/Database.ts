@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
 import Discord from "../base/Discord";
 import playerSchema from "./schemas/player";
+
 config();
 
 const playerModel = mongoose.model("Player", playerSchema);

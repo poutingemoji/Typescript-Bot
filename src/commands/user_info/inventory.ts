@@ -22,10 +22,10 @@ export default class InventoryCommand extends Command {
         msg,
         player.inventory.toObject(),
         function(item, i) {
-          return item
+          console.log(item, i)
+          return "yes"
         },
         {
-          author: msg.author,
           color: "#c362cb",
           title: "Inventory",
         },
