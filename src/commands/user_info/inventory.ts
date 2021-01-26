@@ -1,5 +1,7 @@
 import Command from "../../base/Command";
 import { links } from "../../utils/enumHelper";
+import { convertObjectToString } from "../../utils/Helper";
+import { stripIndents } from "common-tags";
 export default class InventoryCommand extends Command {
   constructor(client) {
     super(client, {
@@ -25,10 +27,14 @@ export default class InventoryCommand extends Command {
       player.inventory.toObject(),
       (item, i) => {
         item = this.combineData(item);
-        console.log(item);
-        return `${i+1}) ${item.hasOwnProperty("emoji") ? item.emoji : ""} [${
-          item.name
-        }](${links.repository})`;
+        return `${i + 1}) ${item.emoji} [${item.name}](${
+          links.repository
+        } "${stripIndents(`
+          ${item.rarity.emoji} ${item.constructor.name}
+          id: ${item.id}
+          
+          ${item.description}
+        `)}")`;
       },
       { title: "Inventory" }
     );

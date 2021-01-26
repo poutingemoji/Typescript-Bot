@@ -1,15 +1,15 @@
 import { Instance, InstanceParameters } from "./Instance";
-
+import { rarities } from "../enumHelper";
 interface ItemParameters extends InstanceParameters {
   rarity: number;
 }
 
 export class Item extends Instance {
-  public readonly rarity: number;
+  public readonly rarity: { emoji: string, hex: string, weight: number };
   constructor(params: ItemParameters) {
     super(params);
     const { rarity } = params;
-    this.rarity = rarity;
+    this.rarity = rarities[rarity];
   }
 }
 

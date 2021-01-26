@@ -20,18 +20,23 @@ export function containsOnlyEmojis(text: string): string {
   */
 }
 
-export function convertArrayToObject(array: unknown[], key: string = "id") {
+export function convertArrayToObject(array: unknown[], key: string = "id"): Object {
   return array.reduce((obj, item) => {
     obj[item[key]] = item;
     return obj;
   }, {});
 }
 
-export function convertMapToArray(map) {
+export function convertMapToArray(map): unknown[] {
   if (!(map instanceof Map)) return map;
   return Array.from(map, ([id, value]) =>
     typeof value == "object" ? Object.assign({ id }, value) : { id, value }
   );
+}
+
+export function convertObjectToString(obj: Object, props?: string[]): string {
+  if (props) obj = this.filterObject(obj, (key => props.includes(key)))
+  return Object.entries(obj).map(arr => arr.join(": ")).join("\n");
 }
 
 /**

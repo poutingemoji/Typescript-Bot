@@ -5,9 +5,9 @@ export default {
   loading: "730597505938620437",
 
   //Game
-  points: "▫",
-  poutingems: "780749730635579394",
-
+  a_exp: "803535164634038342",
+  primogem: "803523016222310472",
+  mora: "803523181062783017",
   //Elements
   anemo: "797742183272022027",
   geo: "797742215970816021",
@@ -23,7 +23,7 @@ export default {
 
   //Talent Types
   attack: "🖱",
-  skill: "\:regional_indicator_e:",
-  burst: "\:regional_indicator_q:",
+  skill: ":regional_indicator_e:",
+  burst: ":regional_indicator_q:",
   passive: "🕊️",
 };

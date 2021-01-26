@@ -118,12 +118,16 @@ export default class Discord extends CommandoCommand {
       options
     );
     if (customOptions) {
-      if (
-        customOptions.hasOwnProperty("author") &&
-        options.hasOwnProperty("title")
-      ) {
+      if (customOptions.hasOwnProperty("author")) {
         const { author } = customOptions;
-        messageEmbed.setTitle(`${author.username}'s ${options.title}`);
+        if (options.hasOwnProperty("title")) {
+          messageEmbed.setTitle(`${author.username}'s ${options.title}`);
+        } else {
+          messageEmbed.setFooter(
+            `Requested by ${author.tag}`,
+            author.displayAvatarURL()
+          );
+        }
       }
       if (customOptions.hasOwnProperty("file")) {
         const { file } = customOptions;
@@ -172,6 +176,7 @@ export default class Discord extends CommandoCommand {
       const { maxPage } = this.paginate(categoryData, 1, pageLength);
       for (let page = 0; page < maxPage; page++) {
         const { items } = this.paginate(categoryData, page + 1, pageLength);
+        console.log(page, items);
         let description = "";
         for (let i = 0; i < items.length; i++) {
           if (globalIndex == startingIndex) startingPage = page + 1;
@@ -181,6 +186,7 @@ export default class Discord extends CommandoCommand {
           )}\n`;
           globalIndex++;
         }
+
         array.push(
           this.buildEmbed(
             {
@@ -188,13 +194,14 @@ export default class Discord extends CommandoCommand {
                 categories[i].length > 0 ? ` | ${categories[i]}` : ""
               }`,
               description,
-              footer: { text: `Page ${page} of ${maxPage}` },
+              footer: {},
             },
             { author }
           )
         );
       }
     }
+    console.log(options.hasOwnProperty("footer"));
     customOptions.embed = new Embeds()
       .setArray(array)
       .setAuthorizedUsers([msg.author.id])

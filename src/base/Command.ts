@@ -50,7 +50,7 @@ export default class Command extends Database {
     this.updatePlayer(player);
   }
 
-  protected combineData(value, lvl = 1) {
+  protected combineData(value, lvl = {cur: 1}) {
     const { id } = value;
     const datas = Object.assign({}, items, weapons, artifacts);
     const data = datas[id];
@@ -58,7 +58,7 @@ export default class Command extends Database {
     if (!data) return value;
     //if (!data.hasOwnProperty("baseStats")) return data;
     const obj = Object.assign({ constructor: data.constructor }, data, value, {
-      lvl: value.hasOwnProperty("lvl") ? value.lvl.cur : lvl,
+      lvl: value.hasOwnProperty("lvl") ? value.lvl : lvl,
     });
     if (value instanceof Weapon) {
     }

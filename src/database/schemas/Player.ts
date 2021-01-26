@@ -6,6 +6,7 @@ import characterSchema from "./character";
 import weaponSchema from "./weapon";
 export default new Schema({
   discordId: String,
+  gender: String,
   ar: {
     cur: { type: Number, default: 1 },
     max: { type: Number, default: ascensions[2].ar },
@@ -17,7 +18,8 @@ export default new Schema({
       default: Parser.evaluate(expFormulas.mediumSlow, { lvl: 2 }),
     },
   },
-  mora: { type: Number, default: 0 },
+  mora: { type: Number, default: 50000 },
+  primogem: { type: Number, default: 1000 },
   characters: {
     type: Map,
     of: characterSchema,

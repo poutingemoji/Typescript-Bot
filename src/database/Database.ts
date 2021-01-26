@@ -101,11 +101,11 @@ export default class Database extends Discord {
    * @param arr
    * @returns Random value
    */
-  protected async replacePlayer(discordId: string) {
+  protected async replacePlayer(discordId: string, update?: Object) {
     return await this.replaceDocument(
       playerModel,
       { discordId },
-      { discordId }
+      Object.assign({ discordId }, update)
     );
   }
 }

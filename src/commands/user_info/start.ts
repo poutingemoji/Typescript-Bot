@@ -1,5 +1,6 @@
 import Command from "../../base/Command";
 import { stripIndents } from "common-tags";
+import { MessageAttachment } from "discord.js";
 export default class StartCommand extends Command {
   constructor(client) {
     super(client, {
@@ -16,46 +17,32 @@ export default class StartCommand extends Command {
 
   async run(msg) {
     const player = await this.getPlayer(msg.author);
-    if (!player) this.replacePlayer(msg.author.id);
-    //await this.addExpToPlayer(player, 1000);
+    if (player) {
+      const res = await this.confirmation(
+        msg,
+        "Are you sure you want to start over?"
+      );
+      if (!res) return;
+    }
     console.log(player);
-    /*
-    const response = await this.awaitResponse(msg, "REACTION", {
-      chooseFrom: ["💚", "💙"],
-      deleteOnResponse: true,
-    });
-
-    msg.say(
-      this.buildEmbed(
-        {
-          color: "#c362cb",
-          title: "Profile",
-          description: stripIndents(`
-             AR ${player.ar.cur} (${player.exp.cur}/${player.exp.max} EXP)
-             ${player.mora} Mora
-          `),
-        },
-        { author: msg.author, file: { path: "src/image.png" } }
-      )
+    const gender = await this.awaitResponse(
+      await msg.reply("https://j.gifs.com/3QkQ3n.gif"),
+      "REACTION",
+      {
+        author: msg.author,
+        chooseFrom: ["♀️", "♂️"],
+      }
     );
-    */
-    msg.say(
-      this.buildEmbed(
-        {
-          color: "#c362cb",
-          title: "Profile",
-          description: stripIndents(`
-             AR ${player.ar.cur} (${player.exp.cur}/${player.exp.max} EXP)
-             ${player.mora} Mora
-          `),
-        },
-        { author: msg.author, file: { path: "src/image.png" } }
-      )
+    if (!gender) return;
+    await this.replacePlayer(msg.author.id, { gender });
+    await this.addValueToPlayer(player, "mora", 50000);
+    await this.addValueToPlayer(player, "primogem", 1000);
+    return msg.reply(
+      stripIndents(`
+      Congratulations, you have begun your adventure with ${msg.client.user}! 🥳
+      As a bonus, 1,000 ${this.emoji("primogem")} and 50,000 ${this.emoji(
+        "mora"
+      )} has been deposited into your adventurer's profile!`)
     );
-    const response = await this.awaitResponse(msg, "REACTION", {
-      author: msg.author,
-      chooseFrom: ["aether", "lumine"],
-    });
-    return;
   }
 }
