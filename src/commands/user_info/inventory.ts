@@ -24,11 +24,13 @@ export default class InventoryCommand extends Command {
       msg,
       player.inventory.toObject(),
       (item, i) => {
-        console.log(item, i)
-        return "YES"
+        item = this.combineData(item);
+        console.log(item);
+        return `${i+1}) ${item.hasOwnProperty("emoji") ? item.emoji : ""} [${
+          item.name
+        }](${links.repository})`;
       },
       { title: "Inventory" }
     );
   }
 }
-//`${i}) [${item.id}](${links.repository}) `

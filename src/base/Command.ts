@@ -27,33 +27,6 @@ export default class Command extends Database {
       }
       return false;
     }
-    const inventory = player.inventory.toObject();
-    for (let category in inventory) {
-      const categoryData = inventory[category];
-      if (categoryData instanceof Map) {
-        categoryData.forEach((value, key) => {
-          categoryData.set(key, this.combineData(value));
-        });
-      } else if (categoryData instanceof Array) {
-        for (let i = 0; i < categoryData.length; i++) {
-          categoryData[i] = this.combineData(categoryData[i]);
-        }
-      }
-      /*
-      for (let item of player.inventory.get(category)) {
-        console.log(item);
-        item = this.combineData(item);
-      }
-      console.log("PLAYER", player);
-      */
-    }
-    player.inventory = inventory;
-    console.log(player.inventory.toObject());
-    /*
-    player.characters.forEach((value, key) =>
-      player.characters.set(key, this.combineData(player, key))
-    );
-    */
     return player;
   }
 
@@ -81,16 +54,12 @@ export default class Command extends Database {
     const { id } = value;
     const datas = Object.assign({}, items, weapons, artifacts);
     const data = datas[id];
-
-    if (!data) return;
-    if (!data.hasOwnProperty("baseStats")) return data;
-
-    const obj = Object.assign(
-      { constructor: data.constructor, stats: {} },
-      data,
-      value,
-      { lvl: value.lvl.cur || lvl }
-    );
+    
+    if (!data) return value;
+    //if (!data.hasOwnProperty("baseStats")) return data;
+    const obj = Object.assign({ constructor: data.constructor }, data, value, {
+      lvl: value.hasOwnProperty("lvl") ? value.lvl.cur : lvl,
+    });
     if (value instanceof Weapon) {
     }
 

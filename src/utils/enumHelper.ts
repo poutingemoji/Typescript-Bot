@@ -20,7 +20,6 @@ export const expFormulas = {
   mediumSlow: "floor((6/5*lvl^3)-(15*lvl^2)+(100*lvl)-140)",
   slow: "floor(((5*lvl)^3)/4)",
 };
-
 export const ascensions = [
   { lvl: 20, ar: 0 },
   { lvl: 40, ar: 15 },
@@ -30,7 +29,6 @@ export const ascensions = [
   { lvl: 80, ar: 40 },
   { lvl: 90, ar: 50 },
 ];
-
 export const rarities = [
   {
     emoji: "⬜",

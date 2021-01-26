@@ -10,6 +10,7 @@ import {
   Command as CommandoCommand,
   CommandInfo,
   CommandoClient,
+  CommandoMessage,
 } from "discord.js-commando";
 import emojis from "../data/emojis";
 import { waitingOnResponse } from "../utils/enumHelper";
@@ -110,7 +111,7 @@ export default class Discord extends CommandoCommand {
 
   protected buildEmbed(
     options: MessageEmbedOptions,
-    customOptions?: MessageEmbedCustomOptions
+    customOptions: MessageEmbedCustomOptions = {}
   ): MessageEmbed | Embeds {
     const messageEmbed = Object.assign(
       customOptions.embed || new MessageEmbed(),
@@ -215,16 +216,17 @@ export default class Discord extends CommandoCommand {
     return embeds.build();
   }
 
-  protected async confirmation(msg: Message, response?: string) {
+  protected async confirmation(msg: Message, response?: string, author?: User) {
+    author = author || msg.author;
     const awaitOptions: AwaitOptions = {
-      author: msg.author,
+      author,
       chooseFrom: ["green_check", "red_cross"],
     };
     response
       ? (awaitOptions.deleteOnResponse = true)
       : (awaitOptions.removeAllReactions = true);
     const res = await this.awaitResponse(
-      response ? await msg.reply(response) : msg,
+      response ? await msg.channel.send(`${author}, ${response}`) : msg,
       "REACTION",
       awaitOptions
     );
