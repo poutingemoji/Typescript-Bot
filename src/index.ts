@@ -1,7 +1,7 @@
 import Client from "./base/Client";
-console.log(process.env.PREFIX);
+console.log(process.env.COMMAND_PREFIX);
 new Client({
-  commandPrefix: process.env.PREFIX,
+  commandPrefix: process.env.COMMAND_PREFIX,
   owner: "257641125135908866",
   shards: "auto",
 }).init();
