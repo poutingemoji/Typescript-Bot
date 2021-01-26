@@ -5,11 +5,8 @@ import { writeFile } from "fs";
 import { join } from "path";
 import { commandGroups, waitingOnResponse } from "../utils/enumHelper";
 import { secondsToTimeFormat } from "../utils/Helper";
-import {
-  Message,
-} from "discord.js";
+import { Message } from "discord.js";
 config();
-
 
 export default class Client extends CommandoClient {
   public init(): void {
