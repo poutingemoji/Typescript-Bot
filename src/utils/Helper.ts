@@ -42,13 +42,6 @@ export function convertToArray(obj): unknown[] {
   }
 }
 
-export function convertObjectToString(obj: Object, props?: string[]): string {
-  if (props) obj = this.filterObject(obj, (key) => props.includes(key));
-  return Object.entries(obj)
-    .map((arr) => arr.join(": "))
-    .join("\n");
-}
-
 /**
  * Fills the given array with the given value x times.
  */

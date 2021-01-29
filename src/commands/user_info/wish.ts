@@ -3,7 +3,7 @@ import { randomWeightedChoice } from "../../utils/Helper";
 import characters from "../../data/characters";
 import weapons from "../../data/weapons";
 import { stripIndents } from "common-tags";
-import { playerModel } from "../../database/models";
+import {PlayerModel} from "../../database/players/model";
 
 const pool = Object.values(Object.assign({}, characters, weapons))
 const wishGIFs = {
@@ -48,7 +48,7 @@ export default class WishCommand extends Command {
       player.pity5 += 1;
       player.primogem -= 160
       console.log(player)
-      await playerModel.updateOne({ discordId: msg.author.id }, player);
+      await PlayerModel.updateOne({ discordId: msg.author.id }, player);
       let filteredPool = pool;
       if (player.pity5 == 89) {
         filteredPool.filter(item => item.rarity.id == 5)

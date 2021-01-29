@@ -1,8 +1,8 @@
-import Command from "../../base/Command";
 import { stripIndents } from "common-tags";
-import { MessageAttachment } from "discord.js";
-import { PlayerModel } from "../../database/players/model";
 import { Document } from "mongoose";
+import Command from "../../base/Command";
+import { PlayerModel } from "../../database/players/model";
+import { IPlayerDocument } from "../../database/players/types";
 import { numberWithCommas } from "../../utils/Helper";
 export default class StartCommand extends Command {
   constructor(client) {
@@ -35,7 +35,7 @@ export default class StartCommand extends Command {
     if (!gender) return;
     await PlayerModel.replaceOne(
       { discordId: msg.author.id },
-      Object.assign(player, { discordId: msg.author.id, gender }),
+      { discordId: msg.author.id, gender } as IPlayerDocument,
       { upsert: true }
     );
     player = await PlayerModel.findOne({ discordId: msg.author.id });

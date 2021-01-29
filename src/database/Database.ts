@@ -3,8 +3,6 @@ import { config } from "dotenv";
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
 import Discord from "../base/Discord";
-import { playerModel } from "../database/models";
-
 config();
 
 export default class Database extends Discord {
