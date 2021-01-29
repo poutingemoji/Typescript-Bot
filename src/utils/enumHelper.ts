@@ -33,22 +33,22 @@ export const rarities = [
   {
     emoji: "⬜",
     hex: "#e5e7e9",
-    weight: 30,
+    weight: 100,
   },
   {
     emoji: "🟩",
     hex: "#79b15a",
-    weight: 25,
+    weight: 0,
   },
   {
     emoji: "🟦",
     hex: "#55acef",
-    weight: 10,
+    weight: 100,
   },
   {
     emoji: "🟪",
     hex: "#aa8fd6",
-    weight: 5,
+    weight: 10,
   },
   {
     emoji: "🟨",
@@ -56,3 +56,34 @@ export const rarities = [
     weight: 1,
   },
 ];
+
+export const emojis = {
+  green_check: "797756405771534336",
+  red_cross: "797755868241461258",
+  empty_star: "762389249772617729",
+  loading: "730597505938620437",
+
+  //Game
+  a_exp: "803535164634038342",
+  primogem: "803523016222310472",
+  mora: "803523181062783017",
+  //Elements
+  anemo: "797742183272022027",
+  geo: "797742215970816021",
+  electro: "797742094470742038",
+  dendro: "797741985016184902",
+  hydro: "797742281460809748",
+  pyro: "797742040901353473",
+  cryo: "797742144910655499",
+
+  //Characters
+
+  //Items
+
+  //Talent Types
+  attack: "🖱",
+  skill: ":regional_indicator_e:",
+  burst: ":regional_indicator_q:",
+  passive: "🕊️",
+};
+

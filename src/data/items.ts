@@ -1,19 +1,18 @@
-import { convertArrayToObject } from "../utils/Helper";
 import { Material, Food, WeaponAscensionMaterial } from "../utils/game/Item";
-export default convertArrayToObject([
-  new Material({
+export default {
+  butterflyWings: new Material({
     id: "butterflyWings",
     rarity: 1,
     emoji: "🦋",
   }),
-  new Food({
+  apple: new Food({
     id: "apple",
     rarity: 1,
-    emoji: "🍎"
+    emoji: "🍎",
   }),
-  new WeaponAscensionMaterial({
+  fetters: new WeaponAscensionMaterial({
     id: "fetters",
     rarity: 2,
     emoji: "🔗",
-  })
-]);
+  }),
+};

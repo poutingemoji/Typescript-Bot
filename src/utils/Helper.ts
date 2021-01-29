@@ -20,23 +20,33 @@ export function containsOnlyEmojis(text: string): string {
   */
 }
 
-export function convertArrayToObject(array: unknown[], key: string = "id"): Object {
+export function convertArrayToObject(
+  array: unknown[],
+  key: string = "id"
+): Object {
   return array.reduce((obj, item) => {
     obj[item[key]] = item;
     return obj;
   }, {});
 }
 
-export function convertMapToArray(map): unknown[] {
-  if (!(map instanceof Map)) return map;
-  return Array.from(map, ([id, value]) =>
-    typeof value == "object" ? Object.assign({ id }, value) : { id, value }
-  );
+export function convertToArray(obj): unknown[] {
+  if (obj instanceof Map) {
+    return Array.from(obj, ([id, value]) => {
+      return typeof value == "object"
+        ? Object.assign({ id }, value)
+        : { id, value };
+    });
+  } else if (obj instanceof Object) {
+    return Object.keys(obj).map((id) => Object.assign({ id }, obj[id]));
+  }
 }
 
 export function convertObjectToString(obj: Object, props?: string[]): string {
-  if (props) obj = this.filterObject(obj, (key => props.includes(key)))
-  return Object.entries(obj).map(arr => arr.join(": ")).join("\n");
+  if (props) obj = this.filterObject(obj, (key) => props.includes(key));
+  return Object.entries(obj)
+    .map((arr) => arr.join(": "))
+    .join("\n");
 }
 
 /**
@@ -60,6 +70,16 @@ export function filterObject(raw: Object, filter: (arg0: string) => boolean) {
       obj[key] = raw[key];
       return obj;
     }, {});
+}
+
+export function getNested(obj, path, separator = ".") {
+  return path
+    .replace("[", separator)
+    .replace("]", "")
+    .split(separator)
+    .reduce(function (o, prop) {
+      return o[prop];
+    }, obj);
 }
 
 /**
@@ -130,9 +150,9 @@ export function randomChoice(arr: unknown[]) {
   return arr[randomBetween(0, arr.length - 1)];
 }
 
-export function randomWeightedChoice(arr: unknown[], prop: string = "weight") {
+export function randomWeightedChoice(arr: unknown[], weight: (obj) => number): any {
   return randomChoice(
-    [].concat(...arr.map((obj) => Array(Math.ceil(obj[prop] * 100)).fill(obj)))
+    [].concat(...arr.map((obj) => Array(Math.ceil(weight(obj) * 100)).fill(obj)))
   );
 }
 

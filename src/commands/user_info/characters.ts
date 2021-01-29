@@ -1,14 +1,14 @@
 import Command from "../../base/Command";
 import { links } from "../../utils/enumHelper";
-import { convertObjectToString } from "../../utils/Helper";
+import { convertToArray } from "../../utils/Helper";
 import { stripIndents } from "common-tags";
-export default class InventoryCommand extends Command {
+export default class CharactersCommand extends Command {
   constructor(client) {
     super(client, {
-      name: "inventory",
-      aliases: ["inv"],
+      name: "characters",
+      aliases: ["chars"],
       group: "user_info",
-      memberName: "inventory",
+      memberName: "characters",
       description: "Start your adventure.",
       throttling: {
         usages: 1,
@@ -22,14 +22,15 @@ export default class InventoryCommand extends Command {
     if (!player) return;
     this.buildEmbeds(
       msg,
-      player.inventory,
+      player.characters,
       (item) => {
         item = this.combineData(item);
-        return `${this.emoji(item.emoji)} ${item.name} ${
-          item.hasOwnProperty("value") ? ` | QTY: ${item.value}` : ""
-        }`;
+        return stripIndents(`
+          ${this.emoji(item.emoji)} ${item.name}
+          ${this.emoji(item.weapon.emoji)} ${item.weapon.name} | LVL ${item.lvl.cur} (${item.weapon.exp.cur}/${item.weapon.exp.max} EXP)
+        `);
       },
-      { indexing: "LOCAL", title: "Inventory" },
+      { title: "Characters" }
     );
   }
 }

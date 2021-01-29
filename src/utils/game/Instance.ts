@@ -1,9 +1,9 @@
 import { capitalCase, snakeCase } from "change-case";
-import emojis from "../../data/emojis";
+import { emojis } from "../enumHelper";
 
 export interface InstanceParameters {
   id: string;
-  name?: string,
+  name?: string;
   emoji?: string;
   description?: string;
 }

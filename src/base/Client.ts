@@ -40,11 +40,10 @@ export default class Client extends CommandoClient {
         url: "https://www.twitch.tv/pokimane",
       });
     });
+
     /*
     this.on("message", (msg) => {
-      if (msg.author.id == "257641125135908866") {
-        msg.react("👎")
-      }
+      console.log(msg.guild);
     });
     */
   }

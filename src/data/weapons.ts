@@ -1,29 +1,28 @@
-import { convertArrayToObject } from "../utils/Helper";
 import { Sword, Claymore, Polearm, Catalyst, Bow } from "../utils/game/Weapon";
-export default convertArrayToObject([
-  new Sword({
+export default {
+  dullBlade: new Sword({
     id: "dullBlade",
     rarity: 1,
-    emoji: "🤺",
+    emoji: "804142647782015037",
   }),
-  new Claymore({
+  wasterGreatsword: new Claymore({
     id: "wasterGreatsword",
     rarity: 1,
-    emoji: "🔪",
+    emoji: "804142639309914113",
   }),
-  new Polearm({
+  beginnersProtector: new Polearm({
     id: "beginnersProtector",
     rarity: 1,
-    emoji: "🔱",
+    emoji: "804142523320238121",
   }),
-  new Catalyst({
+  apprenticesNotes: new Catalyst({
     id: "apprenticesNotes",
     rarity: 1,
     emoji: "📔",
   }),
-  new Bow({
+  huntersBow: new Bow({
     id: "huntersBow",
     rarity: 1,
     emoji: "🏹",
   }),
-]);
+};

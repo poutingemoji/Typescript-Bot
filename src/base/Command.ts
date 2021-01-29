@@ -4,19 +4,22 @@ import { Parser } from "expr-eval";
 import artifacts from "../data/artifacts";
 import items from "../data/items";
 import weapons from "../data/weapons";
+import characters from "../data/characters";
 import Database from "../database/Database";
-import playerModel from "../database/schemas/player";
+import {PlayerModel} from "../database/players/model";
 import { expFormulas } from "../utils/enumHelper";
 import { Weapon } from "../utils/game/Weapon";
-import { convertMapToArray } from "../utils/Helper";
+import { convertToArray } from "../utils/Helper";
+import { Character } from "../utils/game/Entity";
+import {IPlayerDocument} from "../database/players/types"
 
 export default class Command extends Database {
   constructor(client, info) {
     super(client, info);
   }
 
-  protected async getPlayer(user: User, msg?: CommandoMessage) {
-    const player = await this.findPlayer(user.id);
+  protected async getPlayer(user: User, msg?: CommandoMessage): Promise<IPlayerDocument> {
+    const player = await PlayerModel.findOne({ discordId: user.id });
     if (!player) {
       if (msg) {
         msg.reply(
@@ -25,44 +28,29 @@ export default class Command extends Database {
             : `${user.username} hasn't began their adventure.`
         );
       }
-      return false;
     }
-    return player;
-  }
-
-  protected async addValueToPlayer(player, key: string, value: number) {
-    player[key] += value;
-    //await this.updateQuestProgress(player, "Earn", key, value);
-    return this.updatePlayer(player);
-  }
-
-  protected async setValueToPlayer(
-    player,
-    key: string,
-    value: boolean | number | string
-  ) {
-    player[key] = value;
-    return this.updatePlayer(player);
+    return player as IPlayerDocument;
   }
 
   protected addExpToPlayer(player, expToAdd: number) {
     addExp(player, expToAdd, expFormulas.mediumSlow);
-    this.updatePlayer(player);
+    PlayerModel.updateOne({ discordId: player.discordId }, player);
   }
 
-  protected combineData(value, lvl = {cur: 1}) {
-    const { id } = value;
-    const datas = Object.assign({}, items, weapons, artifacts);
-    const data = datas[id];
-    
+  protected combineData(value, lvl = { cur: 1 }) {
+    const datas = Object.assign({}, characters, items, weapons, artifacts);
+    const data = datas[value.id];
     if (!data) return value;
     //if (!data.hasOwnProperty("baseStats")) return data;
     const obj = Object.assign({ constructor: data.constructor }, data, value, {
       lvl: value.hasOwnProperty("lvl") ? value.lvl : lvl,
     });
-    if (value instanceof Weapon) {
+    if (obj.constructor == Weapon) {
     }
 
+    if (obj.constructor == Character) {
+      obj.weapon = this.combineData(obj.weapon);
+    }
     /*
        Object.keys(obj.baseStats).map((statId) => {
       obj.stats[statId] = Parser.evaluate(

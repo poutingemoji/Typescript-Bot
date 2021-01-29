@@ -5,11 +5,11 @@ interface ItemParameters extends InstanceParameters {
 }
 
 export class Item extends Instance {
-  public readonly rarity: { emoji: string, hex: string, weight: number };
+  public readonly rarity: { id: number, emoji: string, hex: string, weight: number };
   constructor(params: ItemParameters) {
     super(params);
     const { rarity } = params;
-    this.rarity = rarities[rarity];
+    this.rarity = Object.assign({id: rarity}, rarities[rarity-1])
   }
 }
 

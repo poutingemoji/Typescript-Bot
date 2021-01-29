@@ -12,26 +12,32 @@ import {
   CommandoClient,
   CommandoMessage,
 } from "discord.js-commando";
-import emojis from "../data/emojis";
-import { waitingOnResponse } from "../utils/enumHelper";
-import { containsOnlyEmojis, convertMapToArray } from "../utils/Helper";
+import { waitingOnResponse, links, emojis } from "../utils/enumHelper";
+import {
+  containsOnlyEmojis,
+  convertToArray,
+  randomChoice,
+} from "../utils/Helper";
 import { Embeds } from "discord-paginationembed";
 
-interface MessageEmbedCustomOptions {
+type AwaitType = "MESSAGE" | "REACTION";
+type Indexing = "LOCAL" | "GLOBAL";
+
+interface MessageEmbedCustomOptions extends MessageEmbedOptions {
   embed?: MessageEmbed | Embeds;
-  author?: User;
+  user?: User;
   file?: {
     path: string;
     name?: string;
   };
 }
 
-interface EmbedsOptions {
+interface EmbedsOptions extends MessageEmbedOptions {
   embed?: Embeds;
-  author?: User;
-  globalIndexing?: boolean;
+  indexing?: Indexing;
   pageLength?: number;
   startingIndex?: number;
+  user?: User;
 }
 
 interface AwaitOptions {
@@ -44,8 +50,6 @@ interface AwaitOptions {
   filter?: (...args) => boolean;
   responseWaitTime?: number;
 }
-
-type AwaitType = "MESSAGE" | "REACTION";
 
 export default class Discord extends CommandoCommand {
   constructor(client: CommandoClient, info: CommandInfo) {
@@ -110,32 +114,37 @@ export default class Discord extends CommandoCommand {
   }
 
   protected buildEmbed(
-    options: MessageEmbedOptions,
-    customOptions: MessageEmbedCustomOptions = {}
+    options: MessageEmbedCustomOptions
   ): MessageEmbed | Embeds {
+    const { embed = new MessageEmbed(), file, title, user } = options;
     const messageEmbed = Object.assign(
-      customOptions.embed || new MessageEmbed(),
+      embed,
+      {
+        color: randomChoice([
+          "#a7c5bd",
+          "#e5ddcb",
+          "#eb7b59",
+          "#cf4647",
+          "#524656",
+        ]),
+      },
       options
     );
-    if (customOptions) {
-      if (customOptions.hasOwnProperty("author")) {
-        const { author } = customOptions;
-        if (options.hasOwnProperty("title")) {
-          messageEmbed.setTitle(`${author.username}'s ${options.title}`);
-        } else {
-          messageEmbed.setFooter(
-            `Requested by ${author.tag}`,
-            author.displayAvatarURL()
-          );
-        }
+    if (user) {
+      if (title) {
+        messageEmbed.setTitle(`${user.username}'s ${title}`);
+      } else {
+        messageEmbed.setFooter(
+          `Requested by ${user.tag}`,
+          user.displayAvatarURL()
+        );
       }
-      if (customOptions.hasOwnProperty("file")) {
-        const { file } = customOptions;
-        messageEmbed.attachFiles([
-          new MessageAttachment(file.path, `${file.name}.png`),
-        ]);
-        messageEmbed.setImage(`attachment://${file.name}.png`);
-      }
+    }
+    if (file) {
+      messageEmbed.attachFiles([
+        new MessageAttachment(file.path, `${file.name}.png`),
+      ]);
+      messageEmbed.setImage(`attachment://${file.name}.png`);
     }
     return messageEmbed;
   }
@@ -144,23 +153,23 @@ export default class Discord extends CommandoCommand {
     msg: Message,
     data: object,
     formatFilter: (item, i: number) => string,
-    options: MessageEmbedOptions = {},
-    customOptions: EmbedsOptions = {}
+    options: EmbedsOptions
   ) {
-    const { title } = options;
     const {
-      author = msg.author,
-      globalIndexing,
+      indexing = false,
       pageLength,
       startingIndex,
-    } = customOptions;
-    if (data instanceof Map) data = convertMapToArray(data);
+      title,
+      user = msg.author,
+    } = options;
+    console.log(data instanceof Map);
+    if (data instanceof Map || data instanceof Object) data = convertToArray(data);
     if (data instanceof Array) data = { "": data };
-    for (let prop in data) {
+    for (const prop in data) {
       if (!(data[prop] instanceof Map)) continue;
-      data[prop] = convertMapToArray(data[prop]);
+      data[prop] = convertToArray(data[prop]);
     }
-
+    console.log(data);
     const categories = Object.keys(data);
     if (categories.every((c) => data[c].length == 0))
       return msg.reply(
@@ -170,7 +179,6 @@ export default class Discord extends CommandoCommand {
     const array = [];
     let startingPage = 1;
     let globalIndex = 0;
-
     for (let i = 0; i < categories.length; i++) {
       const categoryData = data[categories[i]];
       const { maxPage } = this.paginate(categoryData, 1, pageLength);
@@ -179,30 +187,27 @@ export default class Discord extends CommandoCommand {
         console.log(page, items);
         let description = "";
         for (let i = 0; i < items.length; i++) {
+          let index = indexing == "GLOBAL" ? globalIndex : i;
           if (globalIndex == startingIndex) startingPage = page + 1;
-          description += `${formatFilter(
+          description += `${indexing ? `${index + 1}) ` : ""}${formatFilter(
             items[i],
-            globalIndexing ? globalIndex : i
+            index
           )}\n`;
           globalIndex++;
         }
-
         array.push(
-          this.buildEmbed(
-            {
-              title: `${title}${
-                categories[i].length > 0 ? ` | ${categories[i]}` : ""
-              }`,
-              description,
-              footer: {},
-            },
-            { author }
-          )
+          this.buildEmbed({
+            title: `${title}${
+              categories[i].length > 0 ? ` | ${categories[i]}` : ""
+            }`,
+            description,
+            footer: {},
+            user,
+          })
         );
       }
     }
-    console.log(options.hasOwnProperty("footer"));
-    customOptions.embed = new Embeds()
+    options.embed = new Embeds()
       .setArray(array)
       .setAuthorizedUsers([msg.author.id])
       .setChannel(msg.channel)
@@ -219,11 +224,11 @@ export default class Discord extends CommandoCommand {
       .setDisabledNavigationEmojis(["delete"])
       .setPageIndicator("footer");
     delete options.title;
-    const embeds = this.buildEmbed(options, customOptions) as Embeds;
+    const embeds = this.buildEmbed(options) as Embeds;
     return embeds.build();
   }
 
-  protected async confirmation(msg: Message, response?: string, author?: User) {
+  protected async confirm(msg: Message, response?: string, author?: User) {
     author = author || msg.author;
     const awaitOptions: AwaitOptions = {
       author,

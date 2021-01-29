@@ -23,7 +23,7 @@ export default class ChallengeCommand extends Command {
   }
 
   async run(msg, { player }) {
-    const response = await this.confirmation(
+    const response = await this.confirm(
       msg,
       `you are being challenged by ${msg.author}!`,
       player

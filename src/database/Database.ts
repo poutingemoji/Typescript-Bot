@@ -3,11 +3,10 @@ import { config } from "dotenv";
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
 import Discord from "../base/Discord";
-import playerSchema from "./schemas/player";
+import { playerModel } from "../database/models";
 
 config();
 
-const playerModel = mongoose.model("Player", playerSchema);
 export default class Database extends Discord {
   constructor(client, info) {
     super(client, info);
@@ -68,6 +67,7 @@ export default class Database extends Discord {
   }
   */
 
+  /*
   private async updateDocument(model, filter, update) {
     return await model.updateOne(filter, update, {
       upsert: true,
@@ -96,16 +96,11 @@ export default class Database extends Discord {
     return await this.findDocument(playerModel, { discordId });
   }
 
-  /**
-   * Returns a random value from an array
-   * @param arr
-   * @returns Random value
-   */
   protected async replacePlayer(discordId: string, update?: Object) {
     return await this.replaceDocument(
       playerModel,
       { discordId },
       Object.assign({ discordId }, update)
     );
-  }
+  }*/
 }

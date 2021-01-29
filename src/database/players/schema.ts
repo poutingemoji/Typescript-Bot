@@ -1,10 +1,14 @@
-import { Parser } from "expr-eval";
 import { Schema } from "mongoose";
+import { Parser } from "expr-eval";
 import { expFormulas, ascensions } from "../../utils/enumHelper";
-import artifactSchema from "./artifact";
-import characterSchema from "./character";
-import weaponSchema from "./weapon";
-export default new Schema({
+import artifactSchema from "../schemas/artifact";
+import characterSchema from "../schemas/character";
+import weaponSchema from "../schemas/weapon";
+import characters from "../../data/characters";
+import {IPlayerModel} from "./types"
+import { findOneOrCreate } from "./statics";
+
+const PlayerSchema = new Schema ({
   discordId: String,
   gender: String,
   ar: {
@@ -20,11 +24,13 @@ export default new Schema({
   },
   mora: { type: Number, default: 50000 },
   primogem: { type: Number, default: 1000 },
+  pity4: { type: Number, default: 0 },
+  pity5: { type: Number, default: 0 },
   characters: {
     type: Map,
     of: characterSchema,
     default: {
-      traveler: {},
+      traveler: characters["traveler"],
     },
   },
   inventory: {
@@ -70,3 +76,7 @@ export default new Schema({
     },
   },
 });
+
+//PlayerSchema.statics.findOneOrCreate = findOneOrCreate;
+
+export default PlayerSchema;

@@ -1,6 +1,9 @@
 import Command from "../../base/Command";
 import { stripIndents } from "common-tags";
 import { MessageAttachment } from "discord.js";
+import { PlayerModel } from "../../database/players/model";
+import { Document } from "mongoose";
+import { numberWithCommas } from "../../utils/Helper";
 export default class StartCommand extends Command {
   constructor(client) {
     super(client, {
@@ -16,15 +19,11 @@ export default class StartCommand extends Command {
   }
 
   async run(msg) {
-    const player = await this.getPlayer(msg.author);
-    if (player) {
-      const res = await this.confirmation(
-        msg,
-        "Are you sure you want to start over?"
-      );
-      if (!res) return;
+    let player = await this.getPlayer(msg.author);
+    if (player instanceof Document) {
+      if (!(await this.confirm(msg, "Are you sure you want to start over?")))
+        return;
     }
-    console.log(player);
     const gender = await this.awaitResponse(
       await msg.reply("https://j.gifs.com/3QkQ3n.gif"),
       "REACTION",
@@ -34,13 +33,18 @@ export default class StartCommand extends Command {
       }
     );
     if (!gender) return;
-    await this.replacePlayer(msg.author.id, { gender });
-    await this.addValueToPlayer(player, "mora", 50000);
-    await this.addValueToPlayer(player, "primogem", 1000);
+    await PlayerModel.replaceOne(
+      { discordId: msg.author.id },
+      Object.assign(player, { discordId: msg.author.id, gender }),
+      { upsert: true }
+    );
+    player = await PlayerModel.findOne({ discordId: msg.author.id });
     return msg.reply(
       stripIndents(`
       Congratulations, you have begun your adventure with ${msg.client.user}! 🥳
-      As a bonus, 1,000 ${this.emoji("primogem")} and 50,000 ${this.emoji(
+      As a bonus, **${numberWithCommas(player.primogem)}** ${this.emoji(
+        "primogem"
+      )} and **${numberWithCommas(player.mora)}** ${this.emoji(
         "mora"
       )} has been deposited into your adventurer's profile!`)
     );
