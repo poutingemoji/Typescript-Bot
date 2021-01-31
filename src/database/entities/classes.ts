@@ -1,4 +1,4 @@
-import { Item } from "../Item";
+import { Item } from "../items/classes";
 import weapons from "../../data/weapons";
 
 class Entity extends Item {
@@ -18,7 +18,6 @@ export class Character extends Entity {
     super(params);
     const { weapon } = params;
     this.weapon = weapons[weapon];
-    console.log(this.weapon)
   }
 }
 

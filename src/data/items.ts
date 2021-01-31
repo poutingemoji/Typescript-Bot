@@ -1,4 +1,4 @@
-import { Material, Food, WeaponAscensionMaterial } from "../database/Item";
+import { Material, Food, WeaponAscensionMaterial } from "../database/items/classes";
 export default {
   butterflyWings: new Material({
     id: "butterflyWings",

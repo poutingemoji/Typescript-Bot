@@ -21,7 +21,7 @@ export default class TestCommand extends Command {
       discordId: msg.author.id,
     });
     if (!player) return this.noPlayerMessage(msg, msg.author);
-    console.log(player)
+    await player.addItem(this.combineData("dullBlade"))
     player.addExp(600)
   }
 }

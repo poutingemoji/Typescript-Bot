@@ -7,7 +7,7 @@ import weaponSchema from "../weapons/schema";
 import characters from "../../data/characters";
 import { IPlayerModel } from "./types";
 import { findPlayer } from "./statics";
-import { addExp, addExpToCharacter } from "./methods";
+import { addExp, addExpToCharacter, addItem } from "./methods";
 const PlayerSchema = new Schema({
   discordId: String,
   gender: String,
@@ -81,5 +81,6 @@ const PlayerSchema = new Schema({
 
 PlayerSchema.methods.addExp = addExp;
 PlayerSchema.methods.addExpToCharacter = addExpToCharacter;
+PlayerSchema.methods.addItem = addItem;
 
 export default PlayerSchema;

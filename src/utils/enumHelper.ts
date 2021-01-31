@@ -56,7 +56,6 @@ export const rarities = [
     weight: 1,
   },
 ];
-
 export const emojis = {
   green_check: "797756405771534336",
   red_cross: "797755868241461258",

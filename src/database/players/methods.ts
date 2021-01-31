@@ -1,10 +1,41 @@
-import { Document } from "mongoose";
-import { IPlayerDocument } from "./types";
-import { PlayerModel } from "./model";
-import { expFormulas } from "../../utils/enumHelper";
 import { Parser } from "expr-eval";
-import { convertMapToArray } from "../../utils/Helper";
-import { User } from "discord.js";
+import { expFormulas } from "../../utils/enumHelper";
+import { Artifact } from "../artifacts/classes";
+import {
+  CharacterLevelUpMaterial,
+  Consumable,
+  CookingIngredient,
+  Food,
+  Gadget,
+  LocalSpecialtyLiyue,
+  LocalSpecialtyMondstadt,
+  Material,
+  Potion,
+  QuestItem,
+  TalentLevelUpMaterial,
+  WeaponAscensionMaterial,
+} from "../items/classes";
+import { Weapon, Sword } from "../weapons/classes";
+import { IPlayerDocument } from "./types";
+const inventoryCategories = {
+  weapons: [Weapon],
+  artifacts: [Artifact],
+  characterDevelopmentItems: [
+    CharacterLevelUpMaterial,
+    WeaponAscensionMaterial,
+    TalentLevelUpMaterial,
+  ],
+  food: [Food, Potion],
+  materials: [
+    LocalSpecialtyMondstadt,
+    LocalSpecialtyLiyue,
+    Material,
+    CookingIngredient,
+  ],
+  gadget: [Gadget],
+  quests: [QuestItem],
+  preciousItems: [Consumable],
+};
 
 /*
 export async function setLastUpdated(this: IPlayerDocument): Promise<void> {
@@ -23,7 +54,6 @@ export async function addExp(
   this: IPlayerDocument,
   expToAdd: number
 ): Promise<void> {
-  console.log(this);
   addExpToObject(this, expToAdd, expFormulas.mediumSlow);
   await this.save();
 }
@@ -44,38 +74,45 @@ export async function addCharacter(player, characterId) {
   await this.save();
 }
 
-export async function addItem(player, itemId, amount = 1) {
-  const item = this.getObjectStats(
-    typeof itemId == "object" ? itemId : newEquipmentObj(itemId)
-  );
-  console.log("TYPE", item.type);
-  if (itemCategories.equipment.includes(item.type)) {
-    player.equipment.push({ id: item.id, lvl: item.lvl });
-  } else {
-    player.inventory.get(itemId)
-      ? player.inventory.set(itemId, player.inventory.get(itemId) + amount)
-      : player.inventory.set(itemId, amount);
+export async function addItem(this: IPlayerDocument, item, amount = 1) {
+  console.log("ITEM", item)
+  for (const [key, value] of Object.entries(inventoryCategories)) {
+    console.log(value);
+    //, item, value.find((constructor) => item instanceof constructor)
+    if (value.map(c => {console.log(c, item instanceof Weapon)})) {
+      const curInv = this.inventory[key];
+      console.log("REEEEE", typeof curInv);
+      return;
+      if (curInv instanceof Array) {
+        player.equipment.push({ id: item.id, lvl: item.lvl });
+      } else {
+        player.inventory.get(item)
+          ? player.inventory.set(item, player.inventory.get(item) + amount)
+          : player.inventory.set(item, amount);
+      }
+    }
   }
-  //this.updateQuestProgress(player, "Collect", itemId);
-  this.savePlayer(player);
+
+  //this.updateQuestProgress(player, "Collect", item);
+  await this.save();
 }
 
-export async function removeItem(player, itemId, amount = 1) {
-  if (isNaN(itemId)) itemId--;
-  const item = isNaN(itemId)
-    ? items[itemId]
-    : items[player.equipment[itemId].id];
+/*
+export async function removeItem(player, item, amount = 1) {
+  if (isNaN(item)) item--;
+    ? items[item]
+    : items[player.equipment[item].id];
   if (!item) return;
   if (itemCategories.equipment.includes(item.type)) {
-    player.equipment.splice(itemId);
+    player.equipment.splice(item);
   } else {
-    player.inventory.get(itemId) >= 2
+    player.inventory.get(item) >= 2
       ? player.inventory.set(
-          itemId,
-          player.inventory.get(itemId) -
-            clamp(amount, 0, player.inventory.get(itemId))
+          item,
+          player.inventory.get(item) -
+            clamp(amount, 0, player.inventory.get(item))
         )
-      : player.inventory.delete(itemId);
+      : player.inventory.delete(item);
   }
   this.savePlayer(player);
 }
@@ -124,6 +161,7 @@ export async function getAdventureRankRange(player) {
     previousAR = ar + 1;
   }
 }
+*/
 
 function addExpToObject(obj, expToAdd: number, expFormula) {
   let prop = "lvl";

@@ -67,16 +67,6 @@ export function filterObject(raw: Object, filter: (arg0: string) => boolean) {
     }, {});
 }
 
-export function getNested(obj, path, separator = ".") {
-  return path
-    .replace("[", separator)
-    .replace("]", "")
-    .split(separator)
-    .reduce(function (o, prop) {
-      return o[prop];
-    }, obj);
-}
-
 /**
  * Returns time passed in seconds since timestamp
  */
@@ -92,7 +82,6 @@ export function groupBy(arr: unknown[], fn: (arg0: unknown) => string): Object {
     const key = fn(item);
     if (!result[key]) result[key] = [];
     result[key].push(item);
-    console.log(result);
     return result;
   }, {});
 }

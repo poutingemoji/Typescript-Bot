@@ -1,5 +1,5 @@
-import { Instance, InstanceParameters } from "./Instance";
-import { rarities } from "../utils/enumHelper";
+import { Instance, InstanceParameters } from "../Instance";
+import { rarities } from "../../utils/enumHelper";
 interface ItemParameters extends InstanceParameters {
   rarity: number;
 }
@@ -43,12 +43,6 @@ export class Food extends Item {
 }
 
 export class Gadget extends Item {
-  constructor(params: ItemParameters) {
-    super(params);
-  }
-}
-
-export class Ingredient extends Item {
   constructor(params: ItemParameters) {
     super(params);
   }

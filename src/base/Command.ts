@@ -16,6 +16,7 @@ export default class Command extends Database {
 
   protected combineData(value, lvl = { cur: 1 }) {
     const datas = Object.assign({}, characters, items, weapons, artifacts);
+    if (typeof value == "string") value = {id: value}
     const data = datas[value.id];
     if (!data) return value;
     //if (!data.hasOwnProperty("baseStats")) return data;

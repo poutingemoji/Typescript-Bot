@@ -176,7 +176,6 @@ export default class Discord extends CommandoCommand {
         data[prop] = convertObjectToArray(data[prop]);
 
     const categories = Object.keys(data);
-    console.log(categories);
     if (categories.every((c) => data[c].length == 0))
       return msg.reply(
         `Your \`${title} | ${categories.join(", ")}\` is empty. 😔`
@@ -187,11 +186,9 @@ export default class Discord extends CommandoCommand {
     let globalIndex = 0;
     for (let i = 0; i < categories.length; i++) {
       const categoryData = data[categories[i]];
-      console.log(categories[i], categoryData);
       const { maxPage } = this.paginate(categoryData, 1, pageLength);
       for (let page = 0; page < maxPage; page++) {
         const { items } = this.paginate(categoryData, page + 1, pageLength);
-        console.log(page, items);
         let description = "";
         for (let i = 0; i < items.length; i++) {
           let index = indexing == "GLOBAL" ? globalIndex : i;

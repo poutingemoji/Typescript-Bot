@@ -1,4 +1,4 @@
-import { Item } from "../Item";
+import { Item } from "../items/classes";
 
 export class Weapon extends Item {
   constructor(params) {

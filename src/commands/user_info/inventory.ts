@@ -23,7 +23,6 @@ export default class InventoryCommand extends Command {
     }).lean();
     if (!player) return this.noPlayerMessage(msg, msg.author);
 
-    console.log(player.inventory);
     this.buildEmbeds(
       msg,
       player.inventory,
