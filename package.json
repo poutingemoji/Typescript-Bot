@@ -9,7 +9,6 @@
   "license": "ISC",
   "dependencies": {
     "change-case": "^4.1.2",
-    "commando-mongodb": "^1.1.0",
     "commando-provider-mongo": "^2.0.2",
     "common-tags": "^1.8.0",
     "dblapi.js": "^2.4.1",
