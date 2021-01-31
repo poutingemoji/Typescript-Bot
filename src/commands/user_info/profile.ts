@@ -1,6 +1,7 @@
 import Command from "../../base/Command";
 import { stripIndents } from "common-tags";
-import {numberWithCommas} from "../../utils/Helper"
+import { numberWithCommas } from "../../utils/Helper";
+import { PlayerModel } from "../../database/players/model";
 export default class ProfileCommand extends Command {
   constructor(client) {
     super(client, {
@@ -23,10 +24,13 @@ export default class ProfileCommand extends Command {
     });
   }
 
-  async run(msg, {user}) {
-    if (!user) user = msg.author
-    const player = await this.getPlayer(user, msg);
-    if (!player) return;
+  async run(msg, { user }) {
+    if (!user) user = msg.author;
+    const player = await PlayerModel.findOne({
+      discordId: msg.author.id,
+    }).lean();
+    if (!player) return this.noPlayerMessage(msg, user);
+
     return msg.say(
       this.buildEmbed({
         title: "Profile",
@@ -35,8 +39,8 @@ export default class ProfileCommand extends Command {
           player.exp.max
         } EXP)
              ${numberWithCommas(player.mora)} Mora ${this.emoji("mora")}
-             ${numberWithCommas(player.primogem)} Primogems ${this.emoji(
-          "primogem"
+             ${numberWithCommas(player.primogems)} Primogems ${this.emoji(
+          "primogems"
         )}
           `),
         thumbnail: { url: user.displayAvatarURL() },

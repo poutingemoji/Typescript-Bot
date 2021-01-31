@@ -19,7 +19,7 @@ export default class StartCommand extends Command {
   }
 
   async run(msg) {
-    let player = await this.getPlayer(msg.author);
+    let player = await PlayerModel.findOne({ discordId: msg.author.id });
     if (player instanceof Document) {
       if (!(await this.confirm(msg, "Are you sure you want to start over?")))
         return;
@@ -42,8 +42,8 @@ export default class StartCommand extends Command {
     return msg.reply(
       stripIndents(`
       Congratulations, you have begun your adventure with ${msg.client.user}! 🥳
-      As a bonus, **${numberWithCommas(player.primogem)}** ${this.emoji(
-        "primogem"
+      As a bonus, **${numberWithCommas(player.primogems)}** ${this.emoji(
+        "primogems"
       )} and **${numberWithCommas(player.mora)}** ${this.emoji(
         "mora"
       )} has been deposited into your adventurer's profile!`)

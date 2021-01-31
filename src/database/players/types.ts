@@ -11,9 +11,11 @@ export interface IPlayer {
     max: number;
   };
   mora: number;
-  primogem: number;
-  pity4: number;
-  pity5: number;
+  primogems: number;
+  pity: {
+    [5]: number;
+    [4]: number;
+  };
   characters: Map<string, any>;
   inventory: {
     weapons: [];
@@ -28,10 +30,12 @@ export interface IPlayer {
 }
 
 export interface IPlayerDocument extends IPlayer, Document {
-  /*
-  setLastUpdated: (this: IPlayerDocument) => Promise<void>;
-  sameLastName: (this: IPlayerDocument) => Promise<Document[]>;
-  */
+  addExp: (this: IPlayerDocument, expToAdd: number) => Promise<void>;
+  addExpToCharacter: (
+    this: IPlayerDocument,
+    expToAdd: number,
+    characterId: string
+  ) => Promise<void>;
 }
 export interface IPlayerModel extends Model<IPlayerDocument> {
   findOneOrCreate: (

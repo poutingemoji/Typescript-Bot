@@ -1,4 +1,4 @@
-//import MongoDBProvider from "commando-mongodb";
+import {MongoDBProvider} from "commando-provider-mongo";
 import { config } from "dotenv";
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
@@ -8,16 +8,16 @@ config();
 export default class Database extends Discord {
   constructor(client, info) {
     super(client, info);
-    /*
-        this.client
+
+    this.client
       .setProvider(
         MongoClient.connect(process.env.MONGODB_URI, {
           useUnifiedTopology: true,
           useNewUrlParser: true,
-        }).then((client) => new MongoDBProvider(client))
+        }).then((client) => new MongoDBProvider(client, process.env.MONGODB_URI.substring(64)))
       )
       .catch(console.error);
-     */
+
 
     mongoose.connection.on("error", (err) => {
       console.error(err);

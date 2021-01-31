@@ -1,22 +1,32 @@
+import { stripIndents } from "common-tags";
 import Command from "../../base/Command";
-import { randomWeightedChoice } from "../../utils/Helper";
 import characters from "../../data/characters";
 import weapons from "../../data/weapons";
-import { stripIndents } from "common-tags";
-import {PlayerModel} from "../../database/players/model";
-
-const pool = Object.values(Object.assign({}, characters, weapons))
+import { PlayerModel } from "../../database/players/model";
+import { randomWeightedChoice } from "../../utils/Helper";
+const pool = Object.values(Object.assign({}, characters, weapons));
 const wishGIFs = {
   [1]: {
-    [1]: "https://cdn.discordapp.com/attachments/722720878932262952/804587004011872256/3starwish-single.gif",
-    [4]: "one wish rarity 4 gif",
     [5]: "https://cdn.discordapp.com/attachments/722720878932262952/804586999356850196/5starwish-single.gif",
+    [4]: "https://cdn.discordapp.com/attachments/722720878932262952/804587004011872256/3starwish-single.gif",
+    [1]: "https://cdn.discordapp.com/attachments/722720878932262952/804587004011872256/3starwish-single.gif",
   },
   [10]: {
-    [4]: "https://cdn.discordapp.com/attachments/722720878932262952/804587001462521886/4starwish-multiple.gif",
     [5]: "https://cdn.discordapp.com/attachments/722720878932262952/804587004562112532/5starwish-multiple.gif",
+    [4]: "https://cdn.discordapp.com/attachments/722720878932262952/804587001462521886/4starwish-multiple.gif",
   },
 };
+const pitySystem = {
+  ["Character"]: {
+    [5]: 90,
+    [4]: 10,
+  },
+  ["Weapon"]: {
+    [5]: 80,
+    [4]: 10,
+  },
+};
+
 export default class WishCommand extends Command {
   constructor(client) {
     super(client, {
@@ -40,34 +50,38 @@ export default class WishCommand extends Command {
   }
 
   async run(msg, { numOfWishes }) {
-    const player = await this.getPlayer(msg.author, msg);
-    if (!player) return;
+    const player = await PlayerModel.findOne({ discordId: msg.author.id });
+    if (!player) return this.noPlayerMessage(msg, msg.author);
+
+    player.primogems -= 160 * numOfWishes;
     let items = [];
     for (let i = 0; i < numOfWishes; i++) {
-      player.pity4 += 1
-      player.pity5 += 1;
-      player.primogem -= 160
-      console.log(player)
-      await PlayerModel.updateOne({ discordId: msg.author.id }, player);
       let filteredPool = pool;
-      if (player.pity5 == 89) {
-        filteredPool.filter(item => item.rarity.id == 5)
-      } else if (player.pity4 == 9) {
-        filteredPool.filter((item) => item.rarity.id == 4);
-      } 
-      items.push(
-        randomWeightedChoice(filteredPool, (obj) => obj.rarity.weight)
+      for (let rarityId in pitySystem["Character"]) {
+        if (player.pity[rarityId] + 1 >= pitySystem["Character"][rarityId]) {
+          filteredPool = filteredPool.filter(
+            (item) => item.rarity.id == parseInt(rarityId)
+          );
+          break;
+        }
+      }
+      const item = randomWeightedChoice(
+        filteredPool,
+        (obj) => obj.rarity.weight
       );
+      for (let rarityId in pitySystem["Character"]) {
+        player.pity[rarityId] += 1;
+        if (rarityId == item.rarity.id) player.pity[rarityId] = 0;
+      }
+      items.push(item);
     }
+    await player.save();
+    const highestRarityItem = items
+      .map((item) => item.rarity.id)
+      .sort((a, b) => a - b)[items.length - 1];
     return msg.reply(
       stripIndents(`
-        ${
-          wishGIFs[numOfWishes][
-            items.map((item) => item.rarity.id).sort((a, b) => a - b)[
-              items.length - 1
-            ]
-          ]
-        }
+        ${wishGIFs[numOfWishes][highestRarityItem]}
         ${items
           .map(
             (item) =>

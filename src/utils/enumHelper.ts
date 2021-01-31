@@ -65,7 +65,7 @@ export const emojis = {
 
   //Game
   a_exp: "803535164634038342",
-  primogem: "803523016222310472",
+  primogems: "803523016222310472",
   mora: "803523181062783017",
   //Elements
   anemo: "797742183272022027",
@@ -86,4 +86,3 @@ export const emojis = {
   burst: ":regional_indicator_q:",
   passive: "🕊️",
 };
-

@@ -17,14 +17,7 @@ export default class UpdateAllCommand extends Command {
   }
 
   async run(msg) {
-    await PlayerModel.updateMany(
-      {},
-      { $unset: {} },
-      { upsert: true },
-      (err, res) => {
-        console.log(res);
-      }
-    );
-    return msg.react("✅");
+    await PlayerModel.updateMany({}, { $set: {}, $unset: {} });
+    msg.react("✅");
   }
 }

@@ -5,10 +5,10 @@ import artifactSchema from "../schemas/artifact";
 import characterSchema from "../schemas/character";
 import weaponSchema from "../schemas/weapon";
 import characters from "../../data/characters";
-import {IPlayerModel} from "./types"
-import { findOneOrCreate } from "./statics";
-
-const PlayerSchema = new Schema ({
+import { IPlayerModel } from "./types";
+import { findPlayer } from "./statics";
+import { addExp, addExpToCharacter } from "./methods";
+const PlayerSchema = new Schema({
   discordId: String,
   gender: String,
   ar: {
@@ -22,10 +22,12 @@ const PlayerSchema = new Schema ({
       default: Parser.evaluate(expFormulas.mediumSlow, { lvl: 2 }),
     },
   },
-  mora: { type: Number, default: 50000 },
-  primogem: { type: Number, default: 1000 },
-  pity4: { type: Number, default: 0 },
-  pity5: { type: Number, default: 0 },
+  mora: { type: Number, default: 50000, min: [0, "Not enough Mora"] },
+  primogems: { type: Number, default: 1000, min: [0, "Not enough Primogems"] },
+  pity: {
+    [5]: { type: Number, default: 0 },
+    [4]: { type: Number, default: 0 },
+  },
   characters: {
     type: Map,
     of: characterSchema,
@@ -77,6 +79,7 @@ const PlayerSchema = new Schema ({
   },
 });
 
-//PlayerSchema.statics.findOneOrCreate = findOneOrCreate;
+PlayerSchema.methods.addExp = addExp;
+PlayerSchema.methods.addExpToCharacter = addExpToCharacter;
 
 export default PlayerSchema;

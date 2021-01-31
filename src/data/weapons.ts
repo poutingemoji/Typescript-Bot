@@ -25,4 +25,9 @@ export default {
     rarity: 1,
     emoji: "🏹",
   }),
+  whatBeesProduceMilk: new Bow({
+    id: "whatBeesProduceMilk",
+    rarity: 5,
+    emoji: "🐝🥛",
+  }),
 };

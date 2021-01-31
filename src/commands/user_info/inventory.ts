@@ -1,7 +1,7 @@
 import Command from "../../base/Command";
 import { links } from "../../utils/enumHelper";
-import { convertObjectToString } from "../../utils/Helper";
 import { stripIndents } from "common-tags";
+import { PlayerModel } from "../../database/players/model";
 export default class InventoryCommand extends Command {
   constructor(client) {
     super(client, {
@@ -18,18 +18,24 @@ export default class InventoryCommand extends Command {
   }
 
   async run(msg) {
-    const player = await this.getPlayer(msg.author, msg);
-    if (!player) return;
+    const player = await PlayerModel.findOne({
+      discordId: msg.author.id,
+    }).lean();
+    if (!player) return this.noPlayerMessage(msg, msg.author);
+
+    console.log(player.inventory);
     this.buildEmbeds(
       msg,
       player.inventory,
       (item) => {
         item = this.combineData(item);
+        console.log(item);
+
         return `${this.emoji(item.emoji)} ${item.name} ${
           item.hasOwnProperty("value") ? ` | QTY: ${item.value}` : ""
         }`;
       },
-      { indexing: "LOCAL", title: "Inventory" },
+      { indexing: "LOCAL", title: "Inventory" }
     );
   }
 }

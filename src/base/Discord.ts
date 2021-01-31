@@ -15,7 +15,7 @@ import {
 import { waitingOnResponse, links, emojis } from "../utils/enumHelper";
 import {
   containsOnlyEmojis,
-  convertToArray,
+  convertObjectToArray,
   randomChoice,
 } from "../utils/Helper";
 import { Embeds } from "discord-paginationembed";
@@ -54,6 +54,14 @@ interface AwaitOptions {
 export default class Discord extends CommandoCommand {
   constructor(client: CommandoClient, info: CommandInfo) {
     super(client, info);
+  }
+
+  protected async noPlayerMessage(msg: CommandoMessage, user: User) {
+    return msg.reply(
+      msg.author.id == user.id
+        ? `Please type \`${msg.guild.commandPrefix}start\` to begin.`
+        : `${user.username} hasn't began their adventure.`
+    );
   }
 
   protected async awaitResponse(
@@ -162,15 +170,13 @@ export default class Discord extends CommandoCommand {
       title,
       user = msg.author,
     } = options;
-    console.log(data instanceof Map);
-    if (data instanceof Map || data instanceof Object) data = convertToArray(data);
     if (data instanceof Array) data = { "": data };
-    for (const prop in data) {
-      if (!(data[prop] instanceof Map)) continue;
-      data[prop] = convertToArray(data[prop]);
-    }
-    console.log(data);
+    for (const prop in data) 
+      if (!Array.isArray(data[prop]))
+        data[prop] = convertObjectToArray(data[prop]);
+
     const categories = Object.keys(data);
+    console.log(categories);
     if (categories.every((c) => data[c].length == 0))
       return msg.reply(
         `Your \`${title} | ${categories.join(", ")}\` is empty. 😔`
@@ -181,6 +187,7 @@ export default class Discord extends CommandoCommand {
     let globalIndex = 0;
     for (let i = 0; i < categories.length; i++) {
       const categoryData = data[categories[i]];
+      console.log(categories[i], categoryData);
       const { maxPage } = this.paginate(categoryData, 1, pageLength);
       for (let page = 0; page < maxPage; page++) {
         const { items } = this.paginate(categoryData, page + 1, pageLength);

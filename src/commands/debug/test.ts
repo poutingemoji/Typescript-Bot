@@ -1,7 +1,5 @@
 import Command from "../../base/Command";
-import { links } from "../../utils/enumHelper";
-import { convertToArray } from "../../utils/Helper";
-import { stripIndents } from "common-tags";
+import { PlayerModel } from "../../database/players/model";
 export default class TestCommand extends Command {
   constructor(client) {
     super(client, {
@@ -19,8 +17,11 @@ export default class TestCommand extends Command {
   }
 
   async run(msg) {
-    const player = await this.getPlayer(msg.author, msg);
-    if (!player) return;
-    console.log(player.characters)
+    const player = await PlayerModel.findOne({
+      discordId: msg.author.id,
+    });
+    if (!player) return this.noPlayerMessage(msg, msg.author);
+    console.log(player)
+    player.addExp(600)
   }
 }

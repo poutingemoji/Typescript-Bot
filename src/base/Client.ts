@@ -55,7 +55,7 @@ export default class Client extends CommandoClient {
       .registerDefaultGroups()
       .registerDefaultCommands({
         unknownCommand: false,
-        help: false,
+        //help: false,
       })
       .registerCommandsIn({
         filter: /^([^.].*)\.(js|ts)$/,

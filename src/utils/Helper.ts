@@ -30,18 +30,20 @@ export function convertArrayToObject(
   }, {});
 }
 
-export function convertToArray(obj): unknown[] {
+export function convertMapToArray(obj): unknown[] {
   if (obj instanceof Map) {
     return Array.from(obj, ([id, value]) => {
       return typeof value == "object"
         ? Object.assign({ id }, value)
         : { id, value };
     });
-  } else if (obj instanceof Object) {
-    return Object.keys(obj).map((id) => Object.assign({ id }, obj[id]));
   }
 }
 
+export function convertObjectToArray(obj) {
+  if (obj instanceof Object)
+    return Object.keys(obj).map((id) => Object.assign({ id }, obj[id]));
+}
 /**
  * Fills the given array with the given value x times.
  */
@@ -143,9 +145,14 @@ export function randomChoice(arr: unknown[]) {
   return arr[randomBetween(0, arr.length - 1)];
 }
 
-export function randomWeightedChoice(arr: unknown[], weight: (obj) => number): any {
+export function randomWeightedChoice(
+  arr: unknown[],
+  weight: (obj) => number
+): any {
   return randomChoice(
-    [].concat(...arr.map((obj) => Array(Math.ceil(weight(obj) * 100)).fill(obj)))
+    [].concat(
+      ...arr.map((obj) => Array(Math.ceil(weight(obj) * 100)).fill(obj))
+    )
   );
 }
 
