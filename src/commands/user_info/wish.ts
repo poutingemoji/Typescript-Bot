@@ -4,6 +4,7 @@ import characters from "../../data/characters";
 import weapons from "../../data/weapons";
 import { PlayerModel } from "../../database/players/model";
 import { randomWeightedChoice } from "../../utils/Helper";
+
 const pool = Object.values(Object.assign({}, characters, weapons));
 const wishGIFs = {
   [1]: {
@@ -16,6 +17,7 @@ const wishGIFs = {
     [4]: "https://cdn.discordapp.com/attachments/722720878932262952/804587001462521886/4starwish-multiple.gif",
   },
 };
+
 const pitySystem = {
   ["Character"]: {
     [5]: 90,

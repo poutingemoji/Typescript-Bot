@@ -1,4 +1,4 @@
-import { Material, Food, WeaponAscensionMaterial } from "../utils/game/Item";
+import { Material, Food, WeaponAscensionMaterial } from "../database/Item";
 export default {
   butterflyWings: new Material({
     id: "butterflyWings",

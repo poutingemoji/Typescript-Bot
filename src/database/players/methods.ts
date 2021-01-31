@@ -116,12 +116,12 @@ export async function addQuests(player) {
 }
 
 export async function getAdventureRankRange(player) {
-  let previousAR = 1;
-  for (let AR in adventureRankRanges) {
-    console.log(AR);
-    if (isBetween(player.adventureRank.cur, previousAR, AR))
-      return adventureRankRanges[AR];
-    previousAR = AR + 1;
+  let previousAR = 1; 
+  for (let ar in adventureRankRanges) {
+    console.log(ar);
+    if (isBetween(player.adventureRank.cur, previousAR, ar))
+      return adventureRankRanges[ar];
+    previousAR = ar + 1;
   }
 }
 

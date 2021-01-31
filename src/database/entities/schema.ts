@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 import { Parser } from "expr-eval";
 import { expFormulas, ascensions } from "../../utils/enumHelper";
-import weaponSchema from "./weapon"
+import weaponSchema from "../weapons/schema"
 export default new Schema({
   lvl: {
     cur: { type: Number, default: 1 },

@@ -1,4 +1,4 @@
-import { Sword, Claymore, Polearm, Catalyst, Bow } from "../utils/game/Weapon";
+import { Sword, Claymore, Polearm, Catalyst, Bow } from "../database/weapons/classes";
 export default {
   dullBlade: new Sword({
     id: "dullBlade",

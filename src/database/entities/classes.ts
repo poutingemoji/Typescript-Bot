@@ -1,4 +1,4 @@
-import { Item } from "./Item";
+import { Item } from "../Item";
 import weapons from "../../data/weapons";
 
 class Entity extends Item {

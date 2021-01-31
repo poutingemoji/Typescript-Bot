@@ -6,8 +6,8 @@ import weapons from "../data/weapons";
 import characters from "../data/characters";
 import Database from "../database/Database";
 
-import { Weapon } from "../utils/game/Weapon";
-import { Character } from "../utils/game/Entity";
+import { Weapon } from "../database/weapons/classes";
+import { Character } from "../database/entities/classes";
 
 export default class Command extends Database {
   constructor(client, info) {

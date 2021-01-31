@@ -1,9 +1,9 @@
 import { Schema } from "mongoose";
 import { Parser } from "expr-eval";
 import { expFormulas, ascensions } from "../../utils/enumHelper";
-import artifactSchema from "../schemas/artifact";
-import characterSchema from "../schemas/character";
-import weaponSchema from "../schemas/weapon";
+import artifactSchema from "../artifacts/schema";
+import characterSchema from "../entities/schema";
+import weaponSchema from "../weapons/schema";
 import characters from "../../data/characters";
 import { IPlayerModel } from "./types";
 import { findPlayer } from "./statics";

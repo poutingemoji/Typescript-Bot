@@ -1,5 +1,5 @@
 import { capitalCase, snakeCase } from "change-case";
-import { emojis } from "../enumHelper";
+import { emojis } from "../utils/enumHelper";
 
 export interface InstanceParameters {
   id: string;

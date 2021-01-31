@@ -1,5 +1,5 @@
 import { Instance, InstanceParameters } from "./Instance";
-import { rarities } from "../enumHelper";
+import { rarities } from "../utils/enumHelper";
 interface ItemParameters extends InstanceParameters {
   rarity: number;
 }

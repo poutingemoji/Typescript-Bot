@@ -1,5 +1,5 @@
   
-import { Character } from "../utils/game/Entity";
+import { Character } from "../database/entities/classes";
 export default {
   traveler: new Character({
     id: "traveler",
