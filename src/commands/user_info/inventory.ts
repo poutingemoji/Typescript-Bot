@@ -31,7 +31,7 @@ export default class InventoryCommand extends Command {
       (item) => {
         if (item.hasOwnProperty("lvl")) {
           item = new Weapon(item);
-          return `${this.emoji(item.emoji)} ${item.name} | Lvl. ${item.lvl.cur} (Exp ${item.exp.cur}/${item.exp.max})`;
+          return `${this.emoji(item.emoji)} ${item.name} | Lvl. ${item.lvl.cur} (${item.exp.cur}/${item.exp.max} Exp)`;
         } else {
           item = new Item(item);
           return `${this.emoji(item.emoji)} ${item.name}`;

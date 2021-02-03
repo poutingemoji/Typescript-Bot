@@ -36,6 +36,7 @@ interface EmbedsOptions extends MessageEmbedOptions {
   embed?: Embeds;
   indexing?: Indexing;
   pageLength?: number;
+  separator?: string;
   startingIndex?: number;
   user?: User;
 }
@@ -166,6 +167,7 @@ export default class Discord extends CommandoCommand {
     const {
       indexing = false,
       pageLength,
+      separator = "\n",
       startingIndex,
       title,
       user = msg.author,
@@ -187,24 +189,27 @@ export default class Discord extends CommandoCommand {
     for (let i = 0; i < categories.length; i++) {
       const categoryData = data[categories[i]];
       const { maxPage } = this.paginate(categoryData, 1, pageLength);
+      let index = 0
       for (let page = 0; page < maxPage; page++) {
         const { items } = this.paginate(categoryData, page + 1, pageLength);
-        let description = "";
-        for (let i = 0; i < items.length; i++) {
-          let index = indexing == "GLOBAL" ? globalIndex : i;
+        const descriptions = [];
+        for (let j = 0; j < items.length; j++) {
+          if (indexing == "GLOBAL") index = globalIndex
           if (globalIndex == startingIndex) startingPage = page + 1;
-          description += `${indexing ? `${index + 1}) ` : ""}${formatFilter(
-            items[i],
-            index
-          )}\n`;
-          globalIndex++;
+          descriptions.push(
+            `${indexing ? `${index + 1}) ` : ""}${formatFilter(
+              items[j],
+              index
+            )}`
+          );
+          index++;
         }
         array.push(
           this.buildEmbed({
             title: `${title}${
               categories[i].length > 0 ? ` | ${categories[i]}` : ""
             }`,
-            description,
+            description: descriptions.join(separator),
             footer: {},
             user,
           })
@@ -225,7 +230,7 @@ export default class Discord extends CommandoCommand {
         forward: "➡️",
         jump: "🔢",
       })
-      .setDisabledNavigationEmojis(["delete"])
+      //.setDisabledNavigationEmojis(["delete"])
       .setPageIndicator("footer");
     delete options.title;
     const embeds = this.buildEmbed(options) as Embeds;

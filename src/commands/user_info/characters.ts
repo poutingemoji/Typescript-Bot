@@ -33,11 +33,11 @@ export default class CharactersCommand extends Command {
         const weapon = char.weapon;
         //prettier-ignore
         return stripIndents(`
-          ${char.name} Lvl. ${char.lvl.cur}/${char.lvl.max} (Exp ${char.exp.cur}/${char.exp.max})
-          ${this.emoji(weapon.emoji)} ${weapon.name} | Lvl. ${char.lvl.cur} (Exp ${weapon.exp.cur}/${weapon.exp.max})
+          ${this.emoji(char.emoji)} **${char.name}** C${char.constellation} | Lvl. ${char.lvl.cur}/${char.lvl.max} (${char.exp.cur}/${char.exp.max} Exp)
+          ${this.emoji(weapon.emoji)} ${weapon.name} | Lvl. ${char.lvl.cur}/${char.lvl.max} (${weapon.exp.cur}/${weapon.exp.max} Exp)
         `);
       },
-      { title: "Characters" }
+      { title: "Characters", separator: "\n\n" }
     );
   }
 }

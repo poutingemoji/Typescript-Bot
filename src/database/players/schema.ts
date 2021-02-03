@@ -7,7 +7,7 @@ import weaponSchema from "../weapons/schema";
 import characters from "../../data/characters.json";
 import { IPlayerModel } from "./types";
 import { findPlayer } from "./statics";
-import { addExp, addExpToCharacter, addItem } from "./methods";
+import { addCharacter, addExp, addExpToCharacter, addItem } from "./methods";
 const PlayerSchema = new Schema({
   discordId: String,
   gender: String,
@@ -23,6 +23,12 @@ const PlayerSchema = new Schema({
     },
   },
   mora: { type: Number, default: 50000, min: [0, "Not enough Mora"] },
+  resin: {
+    type: Number,
+    default: 160,
+    min: [0, "Not enough Resin"],
+    max: [160, "Full Resin"],
+  },
   primogems: { type: Number, default: 1000, min: [0, "Not enough Primogems"] },
   pity: {
     [5]: { type: Number, default: 0 },
@@ -33,6 +39,7 @@ const PlayerSchema = new Schema({
     of: characterSchema,
     default: {
       jean: characters["jean"],
+      amber: characters["amber"],
     },
   },
   inventory: {
@@ -50,6 +57,7 @@ const PlayerSchema = new Schema({
     artifacts: {
       type: Array,
       of: artifactSchema,
+      default: [],
     },
     characterDevelopmentItems: {
       type: Map,
@@ -77,14 +85,11 @@ const PlayerSchema = new Schema({
       of: Number,
     },
   },
-  resin: {
-    cur: { type: Number, default: 160 },
-    max: { type: Number, default: 160 },
-  },
 });
 
 PlayerSchema.methods.addExp = addExp;
 PlayerSchema.methods.addExpToCharacter = addExpToCharacter;
 PlayerSchema.methods.addItem = addItem;
+PlayerSchema.methods.addCharacter = addCharacter;
 
 export default PlayerSchema;

@@ -17,7 +17,7 @@ export default class UpdateAllCommand extends Command {
   }
 
   async run(msg) {
-    await PlayerModel.updateMany({}, { $set: {}, $unset: {} });
+    await PlayerModel.updateMany({}, { $set: {resin: 160}, $unset: {} });
     msg.react("✅");
   }
 }

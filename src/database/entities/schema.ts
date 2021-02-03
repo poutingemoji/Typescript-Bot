@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 import { Parser } from "expr-eval";
 import { expFormulas, ascensions } from "../../utils/enumHelper";
-import weaponSchema from "../weapons/schema"
+import weaponSchema from "../weapons/schema";
 export default new Schema({
   lvl: {
     cur: { type: Number, default: 1 },
@@ -14,5 +14,6 @@ export default new Schema({
       default: Parser.evaluate(expFormulas.mediumFast, { lvl: 2 }),
     },
   },
+  constellation: { type: Number, default: 0 },
   weapon: weaponSchema,
 });

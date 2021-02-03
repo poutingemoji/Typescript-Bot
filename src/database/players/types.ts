@@ -40,6 +40,7 @@ export interface IPlayerDocument extends IPlayer, Document {
     expToAdd: number,
     characterId: string
   ) => Promise<void>;
+  addCharacter: (this: IPlayerDocument, id: string) => Promise<void>;
   addItem: (this: IPlayerDocument, item, amount?: number) => Promise<void>;
 }
 export interface IPlayerModel extends Model<IPlayerDocument> {

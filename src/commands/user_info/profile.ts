@@ -2,6 +2,7 @@ import Command from "../../base/Command";
 import { stripIndents } from "common-tags";
 import { numberWithCommas } from "../../utils/Helper";
 import { PlayerModel } from "../../database/players/model";
+import PlayerSchema from "../../database/players/schema";
 export default class ProfileCommand extends Command {
   constructor(client) {
     super(client, {
@@ -30,16 +31,16 @@ export default class ProfileCommand extends Command {
       discordId: msg.author.id,
     }).lean();
     if (!player) return this.noPlayerMessage(msg, user);
-
+    console.log(PlayerSchema)
     //prettier-ignore
     return msg.say(
       this.buildEmbed({
         title: "Profile",
         description: stripIndents(`
-          ${this.emoji("a_exp")} AR ${player.ar.cur} (Exp ${player.exp.cur}/${player.exp.max})
+          ${this.emoji("a_exp")} AR ${player.ar.cur} (${player.exp.cur}/${player.exp.max} Exp)
           ${numberWithCommas(player.mora)} Mora ${this.emoji("mora")}
           ${numberWithCommas(player.primogems)} Primogems ${this.emoji("primogems")}
-          ${player.resin.cur}/${player.resin.max} Resin ${this.emoji("resin")}
+          ${player.resin}/${PlayerSchema.obj.resin.max[0]} Resin ${this.emoji("resin")}
         `),
         thumbnail: { url: user.displayAvatarURL() },
         user,

@@ -5,8 +5,9 @@ import weapons from "../../data/weapons.json";
 import { PlayerModel } from "../../database/players/model";
 import { randomWeightedChoice } from "../../utils/Helper";
 import { rarities } from "../../utils/enumHelper";
-const pool = Object.values(Object.assign({}, characters, weapons));
-console.log(pool)
+const data = Object.assign({}, characters, weapons);
+const pool = Object.values(data);
+console.log(pool);
 const wishGIFs = {
   [1]: {
     [5]: "https://cdn.discordapp.com/attachments/722720878932262952/804586999356850196/5starwish-single.gif",
@@ -70,8 +71,12 @@ export default class WishCommand extends Command {
       }
       const item = randomWeightedChoice(
         filteredPool,
-        (item) => rarities[item.rarity-1].weight
+        (item) => rarities[item.rarity - 1].weight
       );
+      console.log(Object.keys(data).find((key) => data[key] === item));
+      item.id = Object.keys(data).find((key) => data[key] === item);
+      item.type == "character" ? player.addCharacter(item.id) : player.addItem(item);
+
       for (let rarityId in pitySystem["Character"]) {
         player.pity[rarityId] += 1;
         if (rarityId == item.rarity) player.pity[rarityId] = 0;
@@ -88,7 +93,9 @@ export default class WishCommand extends Command {
         ${items
           .map(
             (item) =>
-              `${rarities[item.rarity-1].emoji} ${this.emoji(item.emoji)} **${item.name}**`
+              `${rarities[item.rarity - 1].emoji} ${this.emoji(item.emoji)} **${
+                item.name
+              }**`
           )
           .join("\n")}
       `)

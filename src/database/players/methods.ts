@@ -1,8 +1,9 @@
 import { Parser } from "expr-eval";
 import { expFormulas } from "../../utils/enumHelper";
 import { IPlayerDocument } from "./types";
+import characters from "../../data/characters.json";
 const inventoryCategories = {
-  weapons: ["weapon"],
+  weapons: ["sword", "bow", "claymore", "polearm", "catalyst"],
   artifacts: ["artifact"],
   characterDevelopmentItems: [
     "characterLevelUpMaterial",
@@ -53,32 +54,26 @@ export async function addExpToCharacter(
   await this.save();
 }
 
-export async function addCharacter(player, characterId) {
-  player.characters.set(characterId, {});
-  await this.save();
+export async function addCharacter(this: IPlayerDocument, id: string) {
+  const char = this.characters.get(id);
+  console.log(id)
+  char ? (char.constellation += 1) : this.characters.set(id, characters[id]);
 }
 
 export async function addItem(this: IPlayerDocument, item, amount = 1) {
-  console.log("ITEM", item)
   for (const [key, value] of Object.entries(inventoryCategories)) {
-    console.log(value);
-    //, item, value.find((constructor) => item instanceof constructor)
-    if (value.map(c => {console.log(c, item instanceof Weapon)})) {
+    if (value.find((type) => item.type == type)) {
       const curInv = this.inventory[key];
-      console.log("REEEEE", typeof curInv);
-      return;
       if (curInv instanceof Array) {
-        player.equipment.push({ id: item.id, lvl: item.lvl });
+        curInv.push({ id: item.id });
       } else {
-        player.inventory.get(item)
-          ? player.inventory.set(item, player.inventory.get(item) + amount)
-          : player.inventory.set(item, amount);
+        curInv.get(item.id)
+          ? curInv.set(item.id, curInv.get(item.id) + amount)
+          : curInv.set(item.id, amount);
       }
     }
   }
-
   //this.updateQuestProgress(player, "Collect", item);
-  await this.save();
 }
 
 /*
