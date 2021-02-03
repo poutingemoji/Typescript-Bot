@@ -31,18 +31,16 @@ export default class ProfileCommand extends Command {
     }).lean();
     if (!player) return this.noPlayerMessage(msg, user);
 
+    //prettier-ignore
     return msg.say(
       this.buildEmbed({
         title: "Profile",
         description: stripIndents(`
-             ${this.emoji("a_exp")} AR ${player.ar.cur} (${player.exp.cur}/${
-          player.exp.max
-        } EXP)
-             ${numberWithCommas(player.mora)} Mora ${this.emoji("mora")}
-             ${numberWithCommas(player.primogems)} Primogems ${this.emoji(
-          "primogems"
-        )}
-          `),
+          ${this.emoji("a_exp")} AR ${player.ar.cur} (Exp ${player.exp.cur}/${player.exp.max})
+          ${numberWithCommas(player.mora)} Mora ${this.emoji("mora")}
+          ${numberWithCommas(player.primogems)} Primogems ${this.emoji("primogems")}
+          ${player.resin.cur}/${player.resin.max} Resin ${this.emoji("resin")}
+        `),
         thumbnail: { url: user.displayAvatarURL() },
         user,
       })

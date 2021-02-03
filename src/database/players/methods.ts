@@ -1,40 +1,24 @@
 import { Parser } from "expr-eval";
 import { expFormulas } from "../../utils/enumHelper";
-import { Artifact } from "../artifacts/classes";
-import {
-  CharacterLevelUpMaterial,
-  Consumable,
-  CookingIngredient,
-  Food,
-  Gadget,
-  LocalSpecialtyLiyue,
-  LocalSpecialtyMondstadt,
-  Material,
-  Potion,
-  QuestItem,
-  TalentLevelUpMaterial,
-  WeaponAscensionMaterial,
-} from "../items/classes";
-import { Weapon, Sword } from "../weapons/classes";
 import { IPlayerDocument } from "./types";
 const inventoryCategories = {
-  weapons: [Weapon],
-  artifacts: [Artifact],
+  weapons: ["weapon"],
+  artifacts: ["artifact"],
   characterDevelopmentItems: [
-    CharacterLevelUpMaterial,
-    WeaponAscensionMaterial,
-    TalentLevelUpMaterial,
+    "characterLevelUpMaterial",
+    "weaponAscensionMaterial",
+    "talentLevelUpMaterial",
   ],
-  food: [Food, Potion],
+  food: ["food", "potion"],
   materials: [
-    LocalSpecialtyMondstadt,
-    LocalSpecialtyLiyue,
-    Material,
-    CookingIngredient,
+    "localSpecialtyMondstadt",
+    "localSpecialtyLiyue",
+    "material",
+    "cookingIngredient",
   ],
-  gadget: [Gadget],
-  quests: [QuestItem],
-  preciousItems: [Consumable],
+  gadget: ["gadget"],
+  quests: ["questItem"],
+  preciousItems: ["consumable"],
 };
 
 /*

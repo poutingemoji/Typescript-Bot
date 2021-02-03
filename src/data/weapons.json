@@ -1,0 +1,44 @@
+{
+  "dullBlade": {
+    "name": "Dull Blade",
+    "type": "sword",
+    "rarity": 1,
+    "emoji": "804142647782015037"
+  },
+  "wasterGreatsword": {
+    "name": "Waster Greatsword",
+    "type": "claymore",
+    "rarity": 1,
+    "emoji": "804142639309914113"
+  },
+  "beginnersProtector": {
+    "name": "Beginner's Protector",
+    "type": "polearm",
+    "rarity": 1,
+    "emoji": "804142523320238121"
+  },
+  "apprenticesNotes": {
+    "name": "Apprentice's Notes",
+    "type": "catalyst",
+    "rarity": 1,
+    "emoji": "📔"
+  },
+  "huntersBow": {
+    "name": "Hunter's Bow",
+    "type": "bow",
+    "rarity": 1,
+    "emoji": "🏹"
+  },
+  "theFlute": {
+    "name": "The Flute",
+    "type": "sword",
+    "rarity": 4,
+    "emoji": "🎶"
+  },
+  "skywardBlade": {
+    "name": "Skyward Blade",
+    "type": "sword",
+    "rarity": 5,
+    "emoji": "👼"
+  }
+}

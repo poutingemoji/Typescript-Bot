@@ -3,6 +3,7 @@ import { links } from "../../utils/enumHelper";
 import { convertObjectToArray } from "../../utils/Helper";
 import { stripIndents } from "common-tags";
 import { PlayerModel } from "../../database/players/model";
+import { Character } from "../../database/entities/classes";
 export default class CharactersCommand extends Command {
   constructor(client) {
     super(client, {
@@ -27,13 +28,13 @@ export default class CharactersCommand extends Command {
     this.buildEmbeds(
       msg,
       convertObjectToArray(player.characters),
-      (item) => {
-        item = this.combineData(item);
+      (char) => {
+        char = new Character(char);
+        const weapon = char.weapon;
+        //prettier-ignore
         return stripIndents(`
-          ${this.emoji(item.emoji)} ${item.name}
-          ${this.emoji(item.weapon.emoji)} ${item.weapon.name} | LVL ${
-          item.lvl.cur
-        } (${item.weapon.exp.cur}/${item.weapon.exp.max} EXP)
+          ${char.name} Lvl. ${char.lvl.cur}/${char.lvl.max} (Exp ${char.exp.cur}/${char.exp.max})
+          ${this.emoji(weapon.emoji)} ${weapon.name} | Lvl. ${char.lvl.cur} (Exp ${weapon.exp.cur}/${weapon.exp.max})
         `);
       },
       { title: "Characters" }

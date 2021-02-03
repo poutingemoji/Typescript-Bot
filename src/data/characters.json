@@ -1,0 +1,16 @@
+{
+  "jean": {
+    "name": "Jean",
+    "element": "Anemo",
+    "type": "character",
+    "rarity": 5,
+    "emoji": "🦋",
+    "weapon": {
+      "id": "dullBlade"
+    },
+    "stats": {
+      "HP": 100,
+      "ATK": 100
+    }
+  }
+}

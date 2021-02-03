@@ -1,0 +1,21 @@
+{
+  "butterflyWings": {
+    "name": "Butterfly Wings",
+    "type": "material",
+    "rarity": 1,
+    "emoji": "🦋"
+  },
+  "apple": {
+    "name": "Apple",
+    "type": "food",
+    "rarity": 1,
+    "emoji": "🍎"
+  },
+  "fetters": {
+    "name": "Fetters of the Dandelion Gladiator",
+    "type": "weaponAscensionMaterial",
+    "rarity": 2,
+    "emoji": "🔗"
+  }
+}
+

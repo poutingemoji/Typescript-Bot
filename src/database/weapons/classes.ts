@@ -1,37 +1,8 @@
-import { Item } from "../items/classes";
-
-export class Weapon extends Item {
+import weapons from "../../data/weapons.json"
+export class Weapon {
+  public readonly ATK: number;
   constructor(params) {
-    super(params);
-  }
-}
-
-export class Sword extends Weapon {
-  constructor(params) {
-    super(params);
-  }
-}
-
-export class Claymore extends Weapon {
-  constructor(params) {
-    super(params);
-  }
-}
-
-export class Polearm extends Weapon {
-  constructor(params) {
-    super(params);
-  }
-}
-
-export class Catalyst extends Weapon {
-  constructor(params) {
-    super(params);
-  }
-}
-
-export class Bow extends Weapon {
-  constructor(params) {
-    super(params);
+    Object.assign(this, weapons[params.id], params)
+    this.ATK = 100;
   }
 }

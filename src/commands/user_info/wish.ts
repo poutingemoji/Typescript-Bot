@@ -1,11 +1,12 @@
 import { stripIndents } from "common-tags";
 import Command from "../../base/Command";
-import characters from "../../data/characters";
-import weapons from "../../data/weapons";
+import characters from "../../data/characters.json";
+import weapons from "../../data/weapons.json";
 import { PlayerModel } from "../../database/players/model";
 import { randomWeightedChoice } from "../../utils/Helper";
-
+import { rarities } from "../../utils/enumHelper";
 const pool = Object.values(Object.assign({}, characters, weapons));
+console.log(pool)
 const wishGIFs = {
   [1]: {
     [5]: "https://cdn.discordapp.com/attachments/722720878932262952/804586999356850196/5starwish-single.gif",
@@ -62,24 +63,24 @@ export default class WishCommand extends Command {
       for (let rarityId in pitySystem["Character"]) {
         if (player.pity[rarityId] + 1 >= pitySystem["Character"][rarityId]) {
           filteredPool = filteredPool.filter(
-            (item) => item.rarity.id == parseInt(rarityId)
+            (item) => item.rarity == parseInt(rarityId)
           );
           break;
         }
       }
       const item = randomWeightedChoice(
         filteredPool,
-        (obj) => obj.rarity.weight
+        (item) => rarities[item.rarity-1].weight
       );
       for (let rarityId in pitySystem["Character"]) {
         player.pity[rarityId] += 1;
-        if (rarityId == item.rarity.id) player.pity[rarityId] = 0;
+        if (rarityId == item.rarity) player.pity[rarityId] = 0;
       }
       items.push(item);
     }
     await player.save();
     const highestRarityItem = items
-      .map((item) => item.rarity.id)
+      .map((item) => item.rarity)
       .sort((a, b) => a - b)[items.length - 1];
     return msg.reply(
       stripIndents(`
@@ -87,7 +88,7 @@ export default class WishCommand extends Command {
         ${items
           .map(
             (item) =>
-              `${item.rarity.emoji} ${this.emoji(item.emoji)} **${item.name}**`
+              `${rarities[item.rarity-1].emoji} ${this.emoji(item.emoji)} **${item.name}**`
           )
           .join("\n")}
       `)

@@ -1,23 +1,13 @@
-import { Instance, InstanceParameters } from "../Instance";
-import { rarities } from "../../utils/enumHelper";
-interface ItemParameters extends InstanceParameters {
-  rarity: number;
-}
 
-export class Item extends Instance {
-  public readonly rarity: {
-    id: number;
-    emoji: string;
-    hex: string;
-    weight: number;
-  };
-  constructor(params: ItemParameters) {
-    super(params);
-    const { rarity } = params;
-    this.rarity = Object.assign({ id: rarity }, rarities[rarity - 1]);
+import { rarities } from "../../utils/enumHelper";
+import  items from "../../data/items.json"
+export class Item {
+  constructor(params) {
+    Object.assign(this, items[params.id], params)
   }
 }
 
+/**
 export class CharacterLevelUpMaterial extends Item {
   constructor(params: ItemParameters) {
     super(params);
@@ -89,3 +79,5 @@ export class WeaponAscensionMaterial extends Item {
     super(params);
   }
 }
+
+ */

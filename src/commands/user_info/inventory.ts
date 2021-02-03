@@ -2,6 +2,8 @@ import Command from "../../base/Command";
 import { links } from "../../utils/enumHelper";
 import { stripIndents } from "common-tags";
 import { PlayerModel } from "../../database/players/model";
+import { Weapon } from "../../database/weapons/classes";
+import { Item } from "../../database/items/classes";
 export default class InventoryCommand extends Command {
   constructor(client) {
     super(client, {
@@ -27,12 +29,13 @@ export default class InventoryCommand extends Command {
       msg,
       player.inventory,
       (item) => {
-        item = this.combineData(item);
-        console.log(item);
-
-        return `${this.emoji(item.emoji)} ${item.name} ${
-          item.hasOwnProperty("value") ? ` | QTY: ${item.value}` : ""
-        }`;
+        if (item.hasOwnProperty("lvl")) {
+          item = new Weapon(item);
+          return `${this.emoji(item.emoji)} ${item.name} | Lvl. ${item.lvl.cur} (Exp ${item.exp.cur}/${item.exp.max})`;
+        } else {
+          item = new Item(item);
+          return `${this.emoji(item.emoji)} ${item.name}`;
+        }
       },
       { indexing: "LOCAL", title: "Inventory" }
     );

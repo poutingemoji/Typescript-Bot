@@ -4,7 +4,7 @@ import { expFormulas, ascensions } from "../../utils/enumHelper";
 import artifactSchema from "../artifacts/schema";
 import characterSchema from "../entities/schema";
 import weaponSchema from "../weapons/schema";
-import characters from "../../data/characters";
+import characters from "../../data/characters.json";
 import { IPlayerModel } from "./types";
 import { findPlayer } from "./statics";
 import { addExp, addExpToCharacter, addItem } from "./methods";
@@ -32,7 +32,7 @@ const PlayerSchema = new Schema({
     type: Map,
     of: characterSchema,
     default: {
-      traveler: characters["traveler"],
+      jean: characters["jean"],
     },
   },
   inventory: {
@@ -76,6 +76,10 @@ const PlayerSchema = new Schema({
       type: Map,
       of: Number,
     },
+  },
+  resin: {
+    cur: { type: Number, default: 160 },
+    max: { type: Number, default: 160 },
   },
 });
 

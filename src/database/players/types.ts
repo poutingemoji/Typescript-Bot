@@ -10,6 +10,10 @@ export interface IPlayer {
     cur: number;
     max: number;
   };
+  resin: {
+    cur: number;
+    max: number;
+  };
   mora: number;
   primogems: number;
   pity: {
