@@ -1,7 +1,8 @@
 import { Weapon } from "../weapons/classes";
 import characters from "../../data/characters.json"
-const enemies = []
+import enemies from "../../data/enemies.json";
 class Entity {
+  
   public readonly stats: { ATK: number; HP: number };
   constructor(params) {
     this.stats = {
@@ -21,8 +22,9 @@ export class Character extends Entity {
 }
 
 export class Enemy extends Entity {
+  public readonly emoji: string;
   constructor(params) {
     super(params);
-    Object.assign(this, enemies[params.id], params)
+    Object.assign(this, enemies[params.id], params);
   }
 }

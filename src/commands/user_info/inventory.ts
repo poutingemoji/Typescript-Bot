@@ -11,7 +11,7 @@ export default class InventoryCommand extends Command {
       aliases: ["inv"],
       group: "user_info",
       memberName: "inventory",
-      description: "Start your adventure.",
+      description: "View your inventory.",
       throttling: {
         usages: 1,
         duration: 60,
@@ -31,13 +31,13 @@ export default class InventoryCommand extends Command {
       (item) => {
         if (item.hasOwnProperty("lvl")) {
           item = new Weapon(item);
-          return `${this.emoji(item.emoji)} ${item.name} | Lvl. ${item.lvl.cur} (${item.exp.cur}/${item.exp.max} Exp)`;
+          return `${this.emoji(item.emoji)} **${item.name}** | Lvl. ${item.lvl.cur} (${item.exp.cur}/${item.exp.max} Exp)`;
         } else {
           item = new Item(item);
-          return `${this.emoji(item.emoji)} ${item.name}`;
+          return `${this.emoji(item.emoji)} **${item.name}**`;
         }
       },
-      { indexing: "LOCAL", title: "Inventory" }
+      { indexing: "LOCAL", title: "Inventory", pageLength: 20 }
     );
   }
 }

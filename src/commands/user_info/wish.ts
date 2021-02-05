@@ -37,7 +37,7 @@ export default class WishCommand extends Command {
       name: "wish",
       group: "user_info",
       memberName: "wish",
-      description: "Start your adventure.",
+      description: "Make a wish.",
       args: [
         {
           key: "numOfWishes",

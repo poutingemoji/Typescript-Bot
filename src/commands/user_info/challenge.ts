@@ -5,7 +5,7 @@ export default class ChallengeCommand extends Command {
       name: "challenge",
       group: "user_info",
       memberName: "challenge",
-      description: "Start your adventure.",
+      description: "Challenge someone.",
       /*
       args: [
         {

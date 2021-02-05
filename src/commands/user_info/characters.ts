@@ -11,7 +11,7 @@ export default class CharactersCommand extends Command {
       aliases: ["chars"],
       group: "user_info",
       memberName: "characters",
-      description: "Start your adventure.",
+      description: "View your characters.",
       throttling: {
         usages: 1,
         duration: 60,
@@ -34,10 +34,10 @@ export default class CharactersCommand extends Command {
         //prettier-ignore
         return stripIndents(`
           ${this.emoji(char.emoji)} **${char.name}** C${char.constellation} | Lvl. ${char.lvl.cur}/${char.lvl.max} (${char.exp.cur}/${char.exp.max} Exp)
-          ${this.emoji(weapon.emoji)} ${weapon.name} | Lvl. ${char.lvl.cur}/${char.lvl.max} (${weapon.exp.cur}/${weapon.exp.max} Exp)
+          • ${this.emoji(weapon.emoji)} ${weapon.name} | Lvl. ${char.lvl.cur}/${char.lvl.max} (${weapon.exp.cur}/${weapon.exp.max} Exp)
         `);
       },
-      { title: "Characters", separator: "\n\n" }
+      { title: "Characters" }
     );
   }
 }

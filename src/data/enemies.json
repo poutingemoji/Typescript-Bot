@@ -1,1 +1,20 @@
-{}
+{
+  "hilichurl": {
+    "name": "Hilichurl",
+    "type": "enemy",
+    "emoji": "🗿",
+    "stats": {
+      "HP": 100,
+      "ATK": 100
+    }
+  },
+  "hilichurlGuard": {
+    "name": "Hilichurl Guard",
+    "type": "enemy",
+    "emoji": "🛡",
+    "stats": {
+      "HP": 150,
+      "ATK": 100
+    }
+  }
+}

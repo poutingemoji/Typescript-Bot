@@ -1,5 +1,5 @@
 import { Document, Model } from "mongoose";
-export interface IPlayer {
+export class IPlayer {
   discordId: string;
   gender: string;
   ar: {

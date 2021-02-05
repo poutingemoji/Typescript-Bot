@@ -9,7 +9,7 @@ export default class ProfileCommand extends Command {
       name: "profile",
       group: "user_info",
       memberName: "profile",
-      description: "Start your adventure.",
+      description: "View a profile.",
       args: [
         {
           key: "user",
