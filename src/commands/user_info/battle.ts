@@ -30,12 +30,14 @@ export default class ChallengeCommand extends Command {
       { hilichurl: 2, hilichurlGuard: 2 },
     ];
     for (let i = 0; i < waves.length; i++) {
-      const wave = waves[i];
-      const enemiesInWave = Object.keys(wave).map((id) =>
-        fillArray(new Enemy({ id }), wave[id]) as {emoji: string}[]
-      );
-      console.log(enemiesInWave)
-     
+
+      const enemiesInWave = [];
+      const newObj = Object.entries(waves).reduce((acc, [key, val]) => {
+        console.log(acc, key, val)
+        return newObj;
+      }, [])
+
+      console.log(enemiesInWave);
     }
   }
 }
