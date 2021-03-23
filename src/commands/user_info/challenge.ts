@@ -1,4 +1,5 @@
 import Command from "../../base/Command";
+
 export default class ChallengeCommand extends Command {
   constructor(client) {
     super(client, {

@@ -28,7 +28,7 @@ export default class ProfileCommand extends Command {
   async run(msg, { user }) {
     if (!user) user = msg.author;
     const player = await PlayerModel.findOne({
-      discordId: msg.author.id,
+      discordId: user.id,
     }).lean();
     if (!player) return this.noPlayerMessage(msg, user);
     console.log(PlayerSchema)
